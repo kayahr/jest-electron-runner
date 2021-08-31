@@ -2,5 +2,10 @@
   "packages": [
     "packages/*"
   ],
-  "version": "3.0.2-iplabs.3"
+  "version": "3.0.2-iplabs.3",
+  "command": {
+    "publish": {
+      "registry": "https://nexus3.iplabs.de/repository/npm-iplabs/"
+    }
+  }
 }
