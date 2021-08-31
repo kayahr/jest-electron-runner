@@ -1,6 +1,6 @@
 {
     "name": "@iplabs/jest-runner-electron",
-    "version": "3.0.2-iplabs.3",
+    "version": "3.0.2-iplabs.4",
     "description": "Jest runner that spawns atom/electron workers instead of node",
     "author": "Aaron Abramov",
     "license": "MIT",
