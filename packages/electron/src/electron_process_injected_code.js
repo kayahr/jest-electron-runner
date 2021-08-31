@@ -35,7 +35,7 @@ app.on('ready', async () => {
   // this mainWindow will keep electron running even if all other windows
   // are gone. There's probably a better way to do it
   // eslint-disable-next-line no-unused-vars
-  const mainWindow = new BrowserWindow({show: false})
+  const mainWindow = new BrowserWindow({show: false, webPreferences: {nativeWindowOpen: true}})
 
   if (isMain) {
     // we spin up an electron process for each test on the main process
