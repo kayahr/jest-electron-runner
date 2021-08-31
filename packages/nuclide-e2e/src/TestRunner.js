@@ -12,11 +12,11 @@ import type {
   Test,
   Watcher,
   TestResult as TestResultBase,
-} from '@jest-runner/core/types';
+} from '@iplabs/jest-runner-core/types';
 import type {TestResult} from '../types';
 
-import {buildFailureTestResult} from '@jest-runner/core/utils';
-import Docblock from '@jest-runner/core/docblock';
+import {buildFailureTestResult} from '@iplabs/jest-runner-core/utils';
+import Docblock from '@iplabs/jest-runner-core/docblock';
 import {spawn} from 'child_process';
 import fs from 'fs-extra';
 import NuclideE2ERPCProcess from './rpc/NuclideE2ERPCProcess.generated';

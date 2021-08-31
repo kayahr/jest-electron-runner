@@ -7,7 +7,7 @@
  */
 
 import typeof Methods from './JestWorkerRPC.js';
-import RPCProcess from '@jest-runner/rpc/RPCProcess';
+import RPCProcess from '@iplabs/jest-runner-rpc/RPCProcess';
 
 class JestWorkerRPCProcess extends RPCProcess<Methods> {
   initializeRemote(): Methods {

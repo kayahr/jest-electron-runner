@@ -13,16 +13,16 @@ A custom test runner for Jest that runs tests inside an [electron](https://elect
 
 ## Getting Started
 
-*NOTE: for `jest@23` use the older version `~@jest-runner/electron@0.2.2`*
+*NOTE: for `jest@23` use the older version `~@iplabs/jest-runner-electron@0.2.2`*
 
-1. Install jest electron runner `yarn add @jest-runner/electron --dev`
+1. Install jest electron runner `yarn add @iplabs/jest-runner-electron --dev`
 2. Add one of these lines to your jest config (in `package.json` or inside your `jest.config.js` file), depending on the process you wish to test. If you wish to test them in parallel, see the tips section below.
 
     - Main process
     ```js
         {
           // ...
-          runner: '@jest-runner/electron/main',
+          runner: '@iplabs/jest-runner-electron/main',
           testEnvironment: 'node',
         }
     ```
@@ -30,8 +30,8 @@ A custom test runner for Jest that runs tests inside an [electron](https://elect
     ```js
         {
           // ...
-          runner: '@jest-runner/electron',
-          testEnvironment: '@jest-runner/electron/environment',
+          runner: '@iplabs/jest-runner-electron',
+          testEnvironment: '@iplabs/jest-runner-electron/environment',
         }
     ```
 3. run jest!
@@ -58,14 +58,14 @@ module.exports = {
   projects: [
     {
       ...common,
-      runner: '@jest-runner/electron/main',
+      runner: '@iplabs/jest-runner-electron/main',
       testEnvironment: 'node',
       testMatch: ['**/__tests__/**/*.(spec|test).ts']
     },
     {
       ...common,
-      runner: '@jest-runner/electron',
-      testEnvironment: '@jest-runner/electron/environment',
+      runner: '@iplabs/jest-runner-electron',
+      testEnvironment: '@iplabs/jest-runner-electron/environment',
       testMatch: ['**/__tests__/**/*.(spec|test).tsx']
     }
   ]

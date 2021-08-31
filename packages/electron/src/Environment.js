@@ -8,7 +8,7 @@
  * @format
  */
 
-import type {ProjectConfig} from '@jest-runner/core/types';
+import type {ProjectConfig} from '@iplabs/jest-runner-core/types';
 
 import mock from 'jest-mock';
 import {installCommonGlobals} from 'jest-util';

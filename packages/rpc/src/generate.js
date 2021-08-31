@@ -8,14 +8,14 @@
  */
 
 import crypto from 'crypto';
-import Docblock from '@jest-runner/core/docblock';
+import Docblock from '@iplabs/jest-runner-core/docblock';
 import fs from 'fs';
 import globLib from 'glob';
 import j from 'jscodeshift';
 import path from 'path';
 import prettier from 'prettier';
 
-const DEFAULT_RPC_PROCESS_PATH = '@jest-runner/rpc/RPCProcess';
+const DEFAULT_RPC_PROCESS_PATH = '@iplabs/jest-runner-rpc/RPCProcess';
 
 type GenerateOptions = {|
   globs: Array<string>,

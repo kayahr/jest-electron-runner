@@ -7,14 +7,14 @@
  * @flow
  */
 
-import type {TestResult} from '@jest-runner/core/types';
+import type {TestResult} from '@iplabs/jest-runner-core/types';
 import type {IPCTestData} from '../../types';
 import runTest from 'jest-runner/build/runTest';
 
 import {
   makeUniqWorkerId,
   buildFailureTestResult,
-} from '@jest-runner/core/utils';
+} from '@iplabs/jest-runner-core/utils';
 
 import {BrowserWindow, ipcMain} from 'electron';
 import {getResolver} from '../utils/resolver';

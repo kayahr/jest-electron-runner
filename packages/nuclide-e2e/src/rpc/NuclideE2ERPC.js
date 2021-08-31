@@ -7,7 +7,7 @@
  * @flow
  */
 
-import type {TestResult} from '@jest-runner/core/types';
+import type {TestResult} from '@iplabs/jest-runner-core/types';
 import type {IPCTestData} from '../../types';
 import setupExpect from 'jest-circus/build/legacy-code-todo-rewrite/jestExpect';
 import {
@@ -16,7 +16,7 @@ import {
 } from 'jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit';
 import electron from 'electron';
 
-import {buildFailureTestResult} from '@jest-runner/core/utils';
+import {buildFailureTestResult} from '@iplabs/jest-runner-core/utils';
 import {BufferedConsole} from 'jest-util';
 
 const setupConsole = () => {

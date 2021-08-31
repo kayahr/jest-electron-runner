@@ -7,7 +7,7 @@
  */
 
 import typeof Methods from './NuclideE2ERPC.js';
-import RPCProcess from '@jest-runner/rpc/RPCProcess';
+import RPCProcess from '@iplabs/jest-runner-rpc/RPCProcess';
 
 class NuclideE2ERPCProcess extends RPCProcess<Methods> {
   initializeRemote(): Methods {

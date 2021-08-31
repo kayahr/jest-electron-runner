@@ -19,7 +19,7 @@ if (!window.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
 
 import type {IPCTestData} from '../types';
 
-import {buildFailureTestResult} from '@jest-runner/core/utils';
+import {buildFailureTestResult} from '@iplabs/jest-runner-core/utils';
 import {ipcRenderer} from 'electron';
 import runTest from 'jest-runner/build/runTest';
 import {getResolver} from './utils/resolver';

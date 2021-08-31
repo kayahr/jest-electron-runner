@@ -10,7 +10,7 @@ exports[`generation logic 1`] = `
  */
 
 import typeof Methods from './SomeRPC.js';
-import RPCProcess from '@jest-runner/rpc/RPCProcess';
+import RPCProcess from '@iplabs/jest-runner-rpc/RPCProcess';
 
 class SomeRPCProcess extends RPCProcess<Methods> {
   initializeRemote(): Methods {

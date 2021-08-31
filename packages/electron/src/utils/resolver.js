@@ -7,7 +7,7 @@
  * @flow
  */
 
-import type {ProjectConfig} from '@jest-runner/core/types';
+import type {ProjectConfig} from '@iplabs/jest-runner-core/types';
 
 import Runtime from 'jest-runtime';
 import HasteMap from 'jest-haste-map';

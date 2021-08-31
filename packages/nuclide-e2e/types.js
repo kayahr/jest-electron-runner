@@ -12,7 +12,7 @@ import type {
   ProjectConfig,
   GlobalConfig,
   TestResult as TestResultBase,
-} from '@jest-runner/core/types';
+} from '@iplabs/jest-runner-core/types';
 
 export type IPCTestData = {
   config: ProjectConfig,

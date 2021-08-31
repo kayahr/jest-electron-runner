@@ -8,7 +8,7 @@
  * @format
  */
 
-import RPCConnection from '@jest-runner/rpc/RPCConnection';
+import RPCConnection from '@iplabs/jest-runner-rpc/RPCConnection';
 import NuclideE2ERPC from '../rpc/NuclideE2ERPC';
 import jestCircusGlobals from 'jest-circus';
 
