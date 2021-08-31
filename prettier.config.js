@@ -9,7 +9,7 @@
 
 module.exports = {
   printWidth: 80,
-  parser: 'babylon',
+  parser: 'babel',
   semi: true,
   singleQuote: true,
   bracketSpacing: false,
