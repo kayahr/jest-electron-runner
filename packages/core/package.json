@@ -1,6 +1,6 @@
 {
     "name": "@iplabs/jest-runner-core",
-    "version": "3.0.0",
+    "version": "3.0.2-iplabs.1",
     "description": "Shared code for Jest test runner packages",
     "author": "Aaron Abramov",
     "license": "MIT",
