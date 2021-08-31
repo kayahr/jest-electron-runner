@@ -34,6 +34,9 @@
     "prettier": "^1.14.2",
     "string-length": "^2.0.0"
   },
+  "publishConfig": {
+    "registry": "https://nexus3.iplabs.de/repository/npm-iplabs/"
+  },
   "workspaces": [
     "packages/*"
   ],
