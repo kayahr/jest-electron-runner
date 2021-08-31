@@ -1,6 +1,6 @@
 {
     "name": "@iplabs/jest-runner-electron",
-    "version": "3.0.2-iplabs.2",
+    "version": "3.0.2-iplabs.3",
     "description": "Jest runner that spawns atom/electron workers instead of node",
     "author": "Aaron Abramov",
     "license": "MIT",
@@ -8,7 +8,7 @@
     "repository": "https://github.com/iplabs/jest-electron-runner",
     "dependencies": {
         "@iplabs/jest-runner-core": "^3.0.2-iplabs.2",
-        "@iplabs/jest-runner-rpc": "^3.0.2-iplabs.2",
+        "@iplabs/jest-runner-rpc": "^3.0.2-iplabs.3",
         "jest": "^26.0.0",
         "jest-haste-map": "^26.0.0",
         "jest-mock": "^26.0.0",
