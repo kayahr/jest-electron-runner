@@ -61,7 +61,8 @@
         "./environment": "./lib/main/electron/Environment"
     },
     "peerDependencies": {
-        "electron": "*"
+        "electron": "*",
+        "jest": "*"
     },
     "devDependencies": {
         "@kayahr/eslint-config": "1.6.0",
@@ -77,29 +78,12 @@
         "eslint": "7.32.0",
         "eslint-plugin-deprecation": "1.2.1",
         "eslint-plugin-simple-import-sort": "7.0.0",
+        "jest": "27.2.4",
         "rimraf": "3.0.2",
         "typescript": "4.4.3"
     },
     "dependencies": {
-        "@jest/environment": "^27.2.4",
-        "@jest/fake-timers": "^27.2.4",
-        "@jest/test-result": "^27.2.4",
-        "@jest/transform": "^27.2.4",
-        "@jest/types": "^27.2.4",
-        "graceful-fs": "^4.2.8",
-        "jest": "^27.2.4",
-        "jest-docblock": "^27.0.6",
-        "jest-environment-node": "^27.2.4",
-        "jest-leak-detector": "^27.2.4",
-        "jest-message-util": "^27.2.4",
-        "jest-mock": "^27.2.4",
-        "jest-resolve": "^27.2.4",
-        "jest-runner": "^27.2.4",
-        "jest-runtime": "^27.2.4",
-        "jest-util": "^27.2.4",
         "node-ipc": "^10.1.0",
-        "source-map": "^0.7.3",
-        "source-map-support": "^0.5.20",
         "tslib": "^2.3.1",
         "uuid": "^8.3.2"
     }
