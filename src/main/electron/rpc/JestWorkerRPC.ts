@@ -39,13 +39,23 @@ async function runInBrowserWindow(testData: IPCTestData): Promise<TestResult> {
         const workerID = makeUniqWorkerId();
         const win = new BrowserWindow({
             show: false,
-            webPreferences: { nodeIntegration: true, contextIsolation: false, nativeWindowOpen: true }
+            webPreferences: {
+                nodeIntegration: true,
+                contextIsolation: false,
+                nativeWindowOpen: true
+            }
         });
 
-        await win.loadURL(`file://${require.resolve("../index.html")}`);
-        win.webContents.on("did-finish-load", () => {
-            win.webContents.send("run-test", testData, workerID);
+        win.webContents.on("console-message", (event, level, message, line, sourceId) => {
+            if (/\bdeprecated\b/i.exec(message) != null) {
+                // Ignore deprecation warnings
+                return;
+            }
+            const levels = [ console.trace, console.info, console.warn, console.error ];
+            levels[level](message);
         });
+        await win.loadURL(`file://${require.resolve("../index.html")}`);
+        win.webContents.send("run-test", testData, workerID);
 
         return await new Promise<TestResult>(resolve => {
             ipcMain.once(workerID, (event, testResult: TestResult) => {

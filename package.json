@@ -1,61 +1,107 @@
 {
-  "name": "@kayahr/jest-electron-runner",
-  "version": "4.0.0",
-  "description": "Jest runner that spawns electron workers instead of node",
-  "keywords": [
-    "jest-electron",
-    "jest-runner",
-    "jest",
-    "electron",
-    "tests"
-  ],
-  "license": "MIT",
-  "author": "Klaus Reimer <k@ailis.de>",
-  "repository": "github:kayahr/jest-electron-runner",
-  "bugs": "https://github.com/kayahr/jest-electron-runner/issues",
-  "homepage": "https://github.com/kayahr/jest-electron-runner",
-  "funding": "https://github.com/kayahr/jest-electron-runner?sponsor=1",
-  "files": [
-    "lib",
-    "src"
-  ],
-  "scripts": {
-    "clean": "rimraf lib",
-    "copyfiles": "copyfiles -u 1 src/**/*.html lib",
-    "compile": "tsc",
-    "cspell": "cspell",
-    "lint": "eslint --max-warnings 0 --ext .ts src",
-    "prepare": "npm run clean && npm run compile && npm run copyfiles",
-    "test": "npm run cspell && npm run lint"
-  },
-  "peerDependencies": {
-    "electron": "*"
-  },
-  "devDependencies": {
-    "@kayahr/eslint-config": "1.6.0",
-    "@types/jest": "27.0.2",
-    "@types/node-ipc": "9.1.6",
-    "@types/source-map-support": "0.5.4",
-    "@types/uuid": "8.3.1",
-    "@typescript-eslint/eslint-plugin": "4.32.0",
-    "@typescript-eslint/parser": "4.32.0",
-    "copyfiles": "2.4.1",
-    "cspell": "5.11.1",
-    "electron": "15.1.0",
-    "eslint": "7.32.0",
-    "eslint-plugin-deprecation": "1.2.1",
-    "eslint-plugin-simple-import-sort": "7.0.0",
-    "rimraf": "3.0.2",
-    "typescript": "4.4.3"
-  },
-  "dependencies": {
-    "@jest/environment": "^27.2.4",
-    "jest": "^27.2.4",
-    "jest-runner": "^27.2.4",
-    "jest-util": "^27.2.4",
-    "node-ipc": "^10.1.0",
-    "source-map-support": "^0.5.20",
-    "tslib": "^2.3.1",
-    "uuid": "^8.3.2"
-  }
+    "name": "@kayahr/jest-electron-runner",
+    "version": "4.0.0",
+    "description": "Jest runner that spawns electron workers instead of node",
+    "keywords": [
+        "jest-electron",
+        "jest-runner",
+        "jest",
+        "electron",
+        "tests"
+    ],
+    "license": "MIT",
+    "author": "Klaus Reimer <k@ailis.de>",
+    "repository": "github:kayahr/jest-electron-runner",
+    "bugs": "https://github.com/kayahr/jest-electron-runner/issues",
+    "homepage": "https://github.com/kayahr/jest-electron-runner",
+    "funding": "https://github.com/kayahr/jest-electron-runner?sponsor=1",
+    "files": [
+        "lib",
+        "src"
+    ],
+    "scripts": {
+        "clean": "rimraf lib",
+        "copyfiles": "copyfiles -u 1 src/**/*.html lib",
+        "compile": "tsc",
+        "cspell": "cspell",
+        "lint": "eslint --max-warnings 0 --ext .ts src",
+        "check": "jest",
+        "prepare": "npm run clean && npm run compile && npm run copyfiles",
+        "test": "npm run cspell && npm run lint && npm run check"
+    },
+    "jest": {
+        "projects": [
+            {
+                "displayName": "main",
+                "runner": "./lib/main/electron/TestRunnerMain",
+                "testEnvironment": "node",
+                "testMatch": [
+                    "<rootDir>/lib/test/main/**/*.test.js"
+                ],
+                "transformIgnorePatterns": [
+                    "<rootDir>"
+                ]
+            },
+            {
+                "displayName": "renderer",
+                "runner": "./lib/main/electron/TestRunnerRenderer",
+                "testEnvironment": "./lib/main/electron/Environment",
+                "testMatch": [
+                    "<rootDir>/lib/test/renderer/**/*.test.js"
+                ],
+                "transformIgnorePatterns": [
+                    "<rootDir>"
+                ]
+            }
+        ]
+    },
+    "exports2": {
+        ".": "./lib/main/electron/TestRunnerRenderer",
+        "./main": "./lib/main/electron/TestRunnerMain",
+        "./environment": "./lib/main/electron/Environment"
+    },
+    "peerDependencies": {
+        "electron": "*"
+    },
+    "devDependencies": {
+        "@kayahr/eslint-config": "1.6.0",
+        "@types/jest": "27.0.2",
+        "@types/node-ipc": "9.1.6",
+        "@types/source-map-support": "0.5.4",
+        "@types/uuid": "8.3.1",
+        "@typescript-eslint/eslint-plugin": "4.32.0",
+        "@typescript-eslint/parser": "4.32.0",
+        "copyfiles": "2.4.1",
+        "cspell": "5.11.1",
+        "electron": "15.1.0",
+        "eslint": "7.32.0",
+        "eslint-plugin-deprecation": "1.2.1",
+        "eslint-plugin-simple-import-sort": "7.0.0",
+        "rimraf": "3.0.2",
+        "typescript": "4.4.3"
+    },
+    "dependencies": {
+        "@jest/environment": "^27.2.4",
+        "@jest/fake-timers": "^27.2.4",
+        "@jest/test-result": "^27.2.4",
+        "@jest/transform": "^27.2.4",
+        "@jest/types": "^27.2.4",
+        "chalk": "^4.1.2",
+        "graceful-fs": "^4.2.8",
+        "jest": "^27.2.4",
+        "jest-docblock": "^27.0.6",
+        "jest-environment-node": "^27.2.4",
+        "jest-leak-detector": "^27.2.4",
+        "jest-message-util": "^27.2.4",
+        "jest-mock": "^27.2.4",
+        "jest-resolve": "^27.2.4",
+        "jest-runner": "^27.2.4",
+        "jest-runtime": "^27.2.4",
+        "jest-util": "^27.2.4",
+        "node-ipc": "^10.1.0",
+        "source-map": "^0.7.3",
+        "source-map-support": "^0.5.20",
+        "tslib": "^2.3.1",
+        "uuid": "^8.3.2"
+    }
 }

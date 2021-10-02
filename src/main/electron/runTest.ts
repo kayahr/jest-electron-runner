@@ -28,7 +28,7 @@ import { TestFramework } from "jest-runner/build/types";
 import type RuntimeClass from "jest-runtime";
 import { ErrorWithStack, interopRequireDefault, setGlobal } from "jest-util";
 import { RawSourceMap } from "source-map";
-import sourcemapSupport from "source-map-support";
+import sourcemapSupport, { UrlAndMap } from "source-map-support";
 
 type RunTestInternalResult = {
     leakDetector: LeakDetector | null;
@@ -91,7 +91,7 @@ async function runTestInternal(
 
     let testEnvironment = config.testEnvironment;
 
-    if (customEnvironment !== "") {
+    if (customEnvironment != null) {
         if (Array.isArray(customEnvironment)) {
             throw new Error(
                 `You can only define a single test environment through docblocks, got "${customEnvironment.join(
@@ -205,9 +205,9 @@ async function runTestInternal(
             if (sourceMapSource != null) {
                 try {
                     return {
-                        map: JSON.parse(fs.readFileSync(sourceMapSource, "utf8")) as RawSourceMap,
+                        map: JSON.parse(fs.readFileSync(sourceMapSource, "utf8")) as RawSourceMap | string,
                         url: source
-                    };
+                    } as UrlAndMap;
                 } catch {
                     // Ignored
                 }
