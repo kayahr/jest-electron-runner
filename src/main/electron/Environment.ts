@@ -44,7 +44,13 @@ export default class ElectronEnvironment {
             },
             clearAllTimers() {}
         };
+
+        // Jest seems to set a new process property and this causes trouble in write-file-atomic module used
+        // in Jest's cache transform stuff. So we remember the original property and restore it after Jest
+        // installed it's common globals
+        const process = global.process;
         installCommonGlobals(global, config.globals);
+        global.process = process;
     }
 
     public async setup(): Promise<void> {}

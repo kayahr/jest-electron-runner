@@ -37,9 +37,6 @@
                 "testEnvironment": "node",
                 "testMatch": [
                     "<rootDir>/lib/test/main/**/*.test.js"
-                ],
-                "transformIgnorePatterns": [
-                    "<rootDir>"
                 ]
             },
             {
@@ -48,17 +45,14 @@
                 "testEnvironment": "./lib/main/electron/Environment",
                 "testMatch": [
                     "<rootDir>/lib/test/renderer/**/*.test.js"
-                ],
-                "transformIgnorePatterns": [
-                    "<rootDir>"
                 ]
             }
         ]
     },
     "exports": {
-        ".": "./lib/main/electron/TestRunnerRenderer",
-        "./main": "./lib/main/electron/TestRunnerMain",
-        "./environment": "./lib/main/electron/Environment"
+        ".": "./lib/main/electron/TestRunnerRenderer.js",
+        "./main": "./lib/main/electron/TestRunnerMain.js",
+        "./environment": "./lib/main/electron/Environment.js"
     },
     "peerDependencies": {
         "electron": "*",
