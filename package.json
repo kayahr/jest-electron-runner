@@ -15,6 +15,9 @@
     "bugs": "https://github.com/kayahr/jest-electron-runner/issues",
     "homepage": "https://github.com/kayahr/jest-electron-runner",
     "funding": "https://github.com/kayahr/jest-electron-runner?sponsor=1",
+    "publishConfig": {
+        "access": "public"
+    },
     "files": [
         "lib",
         "src"
