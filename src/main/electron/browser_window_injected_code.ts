@@ -19,31 +19,12 @@ if (win["__REACT_DEVTOOLS_GLOBAL_HOOK__"] == null) {
     };
 }
 
-import { Console } from "console";
 import { ipcRenderer } from "electron";
 
 import { buildFailureTestResult } from "../core/utils.js";
 import type { IPCTestData } from "../types";
 import runTest from "./runTest";
 import { getResolver } from "./utils/resolver";
-
-(() => {
-    const mainConsole = new Console(process.stdout, process.stderr) as unknown as
-        Record<string, (...args: unknown[]) => unknown>;
-    const rendererConsole = global.console as unknown as Record<string, (...args: unknown[]) => unknown>;
-    const mergedConsole: Record<string, Function> = {};
-    Object.getOwnPropertyNames(rendererConsole)
-        .filter(prop => typeof rendererConsole[prop] === "function")
-        .forEach(prop => {
-            mergedConsole[prop] = typeof mainConsole[prop] === "function"
-                ? (...args: unknown[]) => {
-                    mainConsole[prop](...args);
-                    return rendererConsole[prop](...args);
-                }
-                : (...args: unknown[]) => rendererConsole[prop](...args);
-        });
-    global.console = mergedConsole as unknown as Console;
-})();
 
 ipcRenderer.on(
     "run-test",

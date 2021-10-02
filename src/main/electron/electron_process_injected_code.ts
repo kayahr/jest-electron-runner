@@ -5,9 +5,6 @@
  * See LICENSE.md for licensing information.
  */
 
-// $FlowFixMe flow doesn't know about console
-import { Console } from "console";
-global.console = new Console(process.stdout, process.stderr);
 import { app } from "electron";
 
 import RPCConnection from "../rpc/RPCConnection";
