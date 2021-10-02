@@ -5,9 +5,10 @@
  * See LICENSE.md for licensing information.
  */
 
+import type { TestResult } from "@jest/test-result";
+
 import { RPCProcess } from "../../rpc/RPCProcess";
 import { IPCTestData } from "../../types";
-import type { TestResult } from '@jest/test-result';
 
 interface Methods {
     runTest(data: IPCTestData): Promise<TestResult>;
@@ -15,10 +16,10 @@ interface Methods {
 }
 
 export class JestWorkerRPCProcess extends RPCProcess<Methods> {
-    initializeRemote(): Methods {
+    public initializeRemote(): Methods {
         return {
-            runTest: this.jsonRPCCall.bind(this, 'runTest') as (data: IPCTestData) => Promise<TestResult>,
-            shutDown: this.jsonRPCCall.bind(this, 'shutDown'),
+            runTest: this.jsonRPCCall.bind(this, "runTest") as (data: IPCTestData) => Promise<TestResult>,
+            shutDown: this.jsonRPCCall.bind(this, "shutDown")
         };
     }
 }

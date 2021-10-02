@@ -5,63 +5,86 @@
  * See LICENSE.md for licensing information.
  */
 
-import * as uuid from 'uuid';
+import * as uuid from "uuid";
 
-export const makeRequest = (method: string, params: any) => {
-  return {
-    jsonrpc: '2.0',
-    method,
-    params,
-    id: uuid.v4(),
-  };
-};
+export interface Request {
+    jsonrpc: string;
+    method: string;
+    params: unknown[];
+    id: string;
+}
 
-export const serializeRequest = (method: string, params: any) => {
-  const request = makeRequest(method, params);
-  return {id: request.id, json: JSON.stringify(request)};
-};
+export interface SerializedRequest {
+    id: string;
+    json: string;
+}
 
-export const parseRequest = (json: string) => {
-  const obj = JSON.parse(json);
-  return obj;
-};
-
-export const serializeResultResponse = (result: any, id: string) => {
-  const response = {
-    jsonrpc: '2.0',
-    result,
-    id,
-  };
-
-  return JSON.stringify(response);
-};
-
-export const serializeErrorResponse = (error: any, id: string) => {
-  const response = {
-    jsonrpc: '2.0',
-    error: makeError(error),
-    id,
-  };
-
-  return JSON.stringify(response);
-};
-
-export const parseResponse = (json: string) => {
-  const obj = JSON.parse(json);
-  return obj;
-};
-
-const makeError = (error: any, code: number = 1) => {
-  if (error instanceof Error) {
+export function makeRequest(method: string, params: unknown[]): Request {
     return {
-      code,
-      message: error.message,
-      data: error.stack,
+        jsonrpc: "2.0",
+        method,
+        params,
+        id: uuid.v4()
     };
-  }
+}
 
-  return {
-    code,
-    message: JSON.stringify(error),
-  };
-};
+export function serializeRequest(method: string, params: unknown[]): SerializedRequest {
+    const request = makeRequest(method, params);
+    return {
+        id: request.id,
+        json: JSON.stringify(request)
+    };
+}
+
+export function parseRequest(json: string): Request {
+    return JSON.parse(json) as Request;
+}
+
+export interface ResponseError {
+    code: number;
+    message: string;
+    data?: string;
+}
+
+export interface Response {
+    jsonrpc: string,
+    id: string;
+    result?: unknown;
+    error?: ResponseError;
+}
+
+export function serializeResultResponse(result: unknown, id: string): string {
+    const response: Response = {
+        jsonrpc: "2.0",
+        result,
+        id
+    };
+    return JSON.stringify(response);
+}
+
+export function serializeErrorResponse(error: unknown, id: string): string {
+    const response: Response = {
+        jsonrpc: "2.0",
+        error: makeError(error),
+        id
+    };
+    return JSON.stringify(response);
+}
+
+export function parseResponse(json: string): Response {
+    return JSON.parse(json) as Response;
+}
+
+function makeError(error: unknown, code: number = 1): ResponseError {
+    if (error instanceof Error) {
+        return {
+            code,
+            message: error.message,
+            data: error.stack
+        };
+    }
+    return {
+        code,
+        message: JSON.stringify(error)
+    };
+}

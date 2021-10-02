@@ -5,23 +5,17 @@
  * See LICENSE.md for licensing information.
  */
 
-import type { Config } from '@jest/types';
+import type { Config } from "@jest/types";
+import HasteMap, { SerializableModuleMap } from "jest-haste-map";
+import Resolver from "jest-resolve";
+import Runtime from "jest-runtime";
 
-import Runtime from 'jest-runtime';
-import HasteMap from 'jest-haste-map';
-import { SerializableModuleMap } from 'jest-haste-map';
-
-const ATOM_BUILTIN_MODULES = new Set(['atom', 'electron']);
-
-interface Resolver {
-    isCoreModule(moduleName: string): boolean;
-    resolveModule(from: string, to: string, options: unknown): string;
-}
+const ATOM_BUILTIN_MODULES = new Set([ "atom", "electron" ]);
 
 // Atom has builtin modules that can't go through jest transform/cache
 // pipeline. There's no easy way to add custom modules to jest, so we'll wrap
 // jest Resolver object and make it bypass atom's modules.
-const wrapResolver = (resolver: Resolver) => {
+const wrapResolver = (resolver: Resolver): Resolver => {
     const isCoreModule = resolver.isCoreModule;
     const resolveModule = resolver.resolveModule;
 
@@ -44,23 +38,20 @@ const wrapResolver = (resolver: Resolver) => {
     return resolver;
 };
 
-const resolvers = Object.create(null);
-export const getResolver = (
-    config: Config.ProjectConfig,
-    serializableModuleMap: SerializableModuleMap,
-) => {
+const resolvers: Record<string, Resolver> = {};
+export function getResolver(config: Config.ProjectConfig, serializableModuleMap: SerializableModuleMap): Resolver {
     // In watch mode, the raw module map with all haste modules is passed from
     // the test runner to the watch command. This is because jest-haste-map's
     // watch mode does not persist the haste map on disk after every file change.
     // To make this fast and consistent, we pass it from the TestRunner.
-    if (serializableModuleMap) {
+    if (serializableModuleMap != null) {
         const moduleMap = HasteMap.getModuleMapFromJSON(serializableModuleMap);
         return wrapResolver(
             Runtime.createResolver(config, moduleMap)
         );
     } else {
         const name = config.name;
-        if (!resolvers[name]) {
+        if (resolvers[name] == null) {
             resolvers[name] = wrapResolver(
                 Runtime.createResolver(
                     config,
@@ -70,4 +61,4 @@ export const getResolver = (
         }
         return resolvers[name];
     }
-};
+}

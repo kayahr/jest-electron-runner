@@ -5,14 +5,13 @@
  * See LICENSE.md for licensing information.
  */
 
-import 'source-map-support/register';
+import type { Config } from "@jest/types";
+import * as mock from "jest-mock";
+import { installCommonGlobals } from "jest-util";
 import { Context, Script } from "vm";
-import * as mock from 'jest-mock';
-import { installCommonGlobals } from 'jest-util';
-import type { Config } from '@jest/types';
 
 /** Special context which is handled specially in the hacked runInContext method below */
-const RUN_IN_THIS_CONTEXT = {}
+const RUN_IN_THIS_CONTEXT = {};
 
 /** Remembered original runInContext method. */
 const origRunInContext = Script.prototype.runInContext;
@@ -23,34 +22,34 @@ const origRunInContext = Script.prototype.runInContext;
  * replaces the script run code. So we hack into the `script.runInContext` method instead to redirect it to
  * `script.runInThisContext` when environment returns the special [[RUN_IN_THIS_CONTEXT]] context.
  */
-Script.prototype.runInContext = function(context, options) {
+Script.prototype.runInContext = function(context, options): unknown {
     if (context === RUN_IN_THIS_CONTEXT) {
         return this.runInThisContext(options);
     } else {
         return origRunInContext.call(this, context, options);
     }
-}
+};
 
 export default class ElectronEnvironment {
-    global: Object;
-    moduleMocker: Object;
-    fakeTimers: Object;
+    public global: Object;
+    public moduleMocker: Object;
+    public fakeTimers: Object;
 
-    constructor(config: Config.ProjectConfig) {
+    public constructor(config: Config.ProjectConfig) {
         this.global = global;
         this.moduleMocker = new mock.ModuleMocker(global);
         this.fakeTimers = {
             useFakeTimers() {
-                throw new Error('fakeTimers are not supported in electron environment');
+                throw new Error("fakeTimers are not supported in electron environment");
             },
-            clearAllTimers() { },
+            clearAllTimers() {}
         };
         installCommonGlobals(global, config.globals);
     }
 
-    async setup() { }
+    public async setup(): Promise<void> {}
 
-    async teardown() { }
+    public async teardown(): Promise<void> {}
 
     public getVmContext(): Context | null {
         // Return special context which is handled specially in the hacked `script.runInContext` function

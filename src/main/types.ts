@@ -5,8 +5,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import type { Config } from '@jest/types';
-import { SerializableModuleMap } from 'jest-haste-map';
+import type { Config } from "@jest/types";
+import { SerializableModuleMap } from "jest-haste-map";
 
 export type IPCTestData = {
   serializableModuleMap: SerializableModuleMap,

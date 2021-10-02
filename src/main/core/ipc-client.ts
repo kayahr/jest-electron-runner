@@ -5,7 +5,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { MessageType, ServerID, WorkerID, makeMessage } from './utils';
+import { makeMessage, MessageType, ServerID, WorkerID } from "./utils";
 
 export type IPCWorker = {
     onMessage(cb: (message: string) => void): void,
@@ -13,12 +13,12 @@ export type IPCWorker = {
     disconnect(): void,
 };
 
-import * as ipc from 'node-ipc';
+import * as ipc from "node-ipc";
 
 let connected = false;
 export const connectToIPCServer = ({
     serverID,
-    workerID,
+    workerID
 }: {
     serverID: ServerID,
     workerID: WorkerID,
@@ -37,9 +37,9 @@ export const connectToIPCServer = ({
     return new Promise(resolve => {
         const onMessageCallbacks: Array<(msg: string) => void> = [];
         ipc.connectTo(serverID, () => {
-            ipc.of[serverID].on('connect', () => {
+            ipc.of[serverID].on("connect", () => {
                 const initMessage = makeMessage({
-                    messageType: MessageType.INITIALIZE,
+                    messageType: MessageType.INITIALIZE
                 });
                 ipc.of[serverID].emit(workerID, initMessage);
             });
@@ -53,7 +53,7 @@ export const connectToIPCServer = ({
                 onMessage: fn => {
                     onMessageCallbacks.push(fn);
                 },
-                disconnect: () => ipc.disconnect(workerID),
+                disconnect: () => ipc.disconnect(workerID)
             });
         });
     });

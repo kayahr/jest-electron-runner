@@ -5,5 +5,5 @@
  * See LICENSE.md for licensing information.
  */
 
-export const INITIALIZE_MESSAGE = '__________initialize____________';
-export const JSONRPC_EVENT_NAME = '__JSON_RPC__';
+export const INITIALIZE_MESSAGE = "__________initialize____________";
+export const JSONRPC_EVENT_NAME = "__JSON_RPC__";

@@ -1,0 +1,12 @@
+{
+    "$schema": "https://json.schemastore.org/eslintrc",
+    "root": true,
+    "env": {
+        "es6": true,
+        "node": true,
+        "browser": true
+    },
+    "extends": [
+        "@kayahr"
+    ]
+}

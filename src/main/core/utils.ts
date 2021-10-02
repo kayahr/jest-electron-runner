@@ -5,19 +5,19 @@
  * See LICENSE.md for licensing information.
  */
 
-import type { TestResult } from '@jest/test-result';
+import type { TestResult } from "@jest/test-result";
 import type { Config } from "@jest/types";
 
 export type WorkerID = string;
 export type ServerID = string;
 
-import { formatExecError } from 'jest-message-util';
+import { formatExecError } from "jest-message-util";
 
-export const rand = () => Math.floor(Math.random() * 10000000);
+export const rand = (): number => Math.floor(Math.random() * 10000000);
 
-export const invariant = (condition: any, message?: string) => {
+export const invariant = (condition: boolean, message?: string): void => {
     if (!condition) {
-        throw new Error(message || 'Invariant violation.');
+        throw new Error(message ?? "Invariant violation");
     }
 };
 
@@ -28,7 +28,7 @@ export const makeUniqWorkerId = (): WorkerID =>
     `jest-atom-runner-ipc-worker-${Date.now() + rand()}`;
 
 export const validateIPCID = (id?: string): string => {
-    if (typeof id === 'string' && id.match(/ipc/)) {
+    if (typeof id === "string" && (/ipc/.exec(id)) != null) {
         return id;
     }
     throw new Error(`Invalid IPC id: "${JSON.stringify(id)}"`);
@@ -41,23 +41,23 @@ export const getIPCIDs = (): { serverID: ServerID, workerID: WorkerID } => {
 };
 
 export enum MessageType {
-    INITIALIZE = 'INITIALIZE',
-    DATA = 'DATA',
-    RUN_TEST = 'RUN_TEST',
-    TEST_RESULT = 'TEST_RESULT',
-    TEST_FAILURE = 'TEST_FAILURE',
-    SHUT_DOWN = 'SHUT_DOWN',
+    INITIALIZE = "INITIALIZE",
+    DATA = "DATA",
+    RUN_TEST = "RUN_TEST",
+    TEST_RESULT = "TEST_RESULT",
+    TEST_FAILURE = "TEST_FAILURE",
+    SHUT_DOWN = "SHUT_DOWN",
 }
 
 export const MESSAGE_TYPES = Object.keys(MessageType) as unknown as keyof typeof MessageType;
 
 export const parseJSON = (str?: string): Object => {
     if (str == null) {
-        throw new Error('String needs to be passed when parsing JSON');
+        throw new Error("String needs to be passed when parsing JSON");
     }
     let data;
     try {
-        data = JSON.parse(str);
+        data = JSON.parse(str) as Object;
     } catch (error) {
         throw new Error(`Can't parse JSON: ${str}`);
     }
@@ -65,21 +65,20 @@ export const parseJSON = (str?: string): Object => {
     return data;
 };
 
-export const makeMessage = ({
-    messageType,
-    data,
-}: {
-    messageType: MessageType,
-    data?: string,
-}) => `${messageType}-${data || ''}`;
+export interface Message {
+    messageType: MessageType;
+    data?: string;
+}
 
-export const parseMessage = (message: string) => {
+export const makeMessage = ({ messageType, data }: Message): string => `${messageType}-${data ?? ""}`;
+
+export const parseMessage = (message: string): Message => {
     const messageType = Object.values(MESSAGE_TYPES).find(msgType =>
         message.startsWith(msgType),
     ) as MessageType;
-    if (!messageType) {
-        throw new Error(`IPC message of unknown type. Message must start from one of the following strings representing types followed by "-'.
-         known types: ${JSON.stringify(MESSAGE_TYPES)}`);
+    if (messageType == null) {
+        throw new Error(`IPC message of unknown type. Message must start from one of the following strings `
+            + `representing types followed by "-'.known types: ${JSON.stringify(MESSAGE_TYPES)}`);
     }
 
     return { messageType, data: message.slice(messageType.length + 1) };
@@ -116,10 +115,10 @@ export const buildFailureTestResult = (
             unchecked: 0,
             uncheckedKeys: [],
             unmatched: 0,
-            updated: 0,
+            updated: 0
         },
         testExecError: { message: failureMessage, stack: err.stack },
         testFilePath: testPath,
-        testResults: [],
+        testResults: []
     };
 };

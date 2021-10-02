@@ -5,12 +5,11 @@
  * See LICENSE.md for licensing information.
  */
 
-import { TestRunnerTarget } from '../types.js';
-
-import TestRunner from './TestRunner';
+import { TestRunnerTarget } from "../types.js";
+import TestRunner from "./TestRunner";
 
 export default class TestRunnerRenderer extends TestRunner {
-    getTarget(): TestRunnerTarget {
+    public getTarget(): TestRunnerTarget {
         return TestRunnerTarget.MAIN;
     }
 }

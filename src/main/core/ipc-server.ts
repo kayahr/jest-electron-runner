@@ -5,23 +5,21 @@
  * See LICENSE.md for licensing information.
  */
 
-import type { ServerID } from './utils';
+import * as ipc from "node-ipc";
 
-export type Socket = unknown;
-
-import * as ipc from 'node-ipc';
+import type { ServerID } from "./utils";
 
 export type IPCServer = InstanceType<typeof ipc.IPC>["server"];
 
 let started = false;
 
 export const startServer = ({
-    serverID,
+    serverID
 }: {
     serverID: ServerID,
 }): Promise<IPCServer> => {
     if (started) {
-        throw new Error('IPC server can only be started once');
+        throw new Error("IPC server can only be started once");
     }
     return new Promise(resolve => {
         started = true;
