@@ -1,19 +1,18 @@
-/**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+/*
+ * Copyright (C) 2021 Klaus Reimer <k@ailis.de>
+ * Copyright (C) 2014-present, Facebook, Inc.
  *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @flow
- * @format
+ * See LICENSE.md for licensing information.
  */
 
-export const once = (fn: Function) => {
-  let hasBeenCalled = false;
-  return (...args: any) => {
-    if (!hasBeenCalled) {
-      hasBeenCalled = true;
-      return fn(...args);
+export function once<Args extends unknown[], Result extends unknown>
+        (fn: (...args: Args) => Result): (...args: Args) => Result {
+    const none = Symbol();
+    let result: Result | typeof none = none;
+    return (...args: Args): Result => {
+        if (result === none) {
+            result = fn(...args);
+        }
+        return result;
     }
-  };
-};
+}

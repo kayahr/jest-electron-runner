@@ -1,64 +1,60 @@
-/**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+/*
+ * Copyright (C) 2021 Klaus Reimer <k@ailis.de>
+ * Copyright (C) 2014-present, Facebook, Inc.
  *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @flow
- * @format
+ * See LICENSE.md for licensing information.
  */
 
-import type {ServerID, WorkerID} from './utils';
+import { MessageType, ServerID, WorkerID, makeMessage } from './utils';
 
 export type IPCWorker = {
-  onMessage((message: string) => void): void,
-  send(message: string): void,
-  disconnect(): void,
+    onMessage(cb: (message: string) => void): void,
+    send(message: string): void,
+    disconnect(): void,
 };
 
-import ipc from 'node-ipc';
-import {makeMessage, MESSAGE_TYPES} from './utils';
+import * as ipc from 'node-ipc';
 
 let connected = false;
 export const connectToIPCServer = ({
-  serverID,
-  workerID,
+    serverID,
+    workerID,
 }: {
-  serverID: ServerID,
-  workerID: WorkerID,
+    serverID: ServerID,
+    workerID: WorkerID,
 }): Promise<IPCWorker> => {
-  if (connected) {
-    throw new Error(
-      "can't connect to IPC server more than once from one worker",
-    );
-  }
-  connected = true;
+    if (connected) {
+        throw new Error(
+            "can't connect to IPC server more than once from one worker",
+        );
+    }
+    connected = true;
 
-  ipc.config.id = serverID;
-  ipc.config.silent = true;
-  ipc.config.retry = 1500;
+    ipc.config.id = serverID;
+    ipc.config.silent = true;
+    ipc.config.retry = 1500;
 
-  return new Promise(resolve => {
-    const onMessageCallbacks = [];
-    ipc.connectTo(serverID, () => {
-      ipc.of[serverID].on('connect', () => {
-        const initMessage = makeMessage({
-          messageType: MESSAGE_TYPES.INITIALIZE,
+    return new Promise(resolve => {
+        const onMessageCallbacks: Array<(msg: string) => void> = [];
+        ipc.connectTo(serverID, () => {
+            ipc.of[serverID].on('connect', () => {
+                const initMessage = makeMessage({
+                    messageType: MessageType.INITIALIZE,
+                });
+                ipc.of[serverID].emit(workerID, initMessage);
+            });
+
+            ipc.of[serverID].on(workerID, data => {
+                onMessageCallbacks.forEach(cb => cb(data));
+            });
+
+            resolve({
+                send: message => ipc.of[serverID].emit(workerID, message),
+                onMessage: fn => {
+                    onMessageCallbacks.push(fn);
+                },
+                disconnect: () => ipc.disconnect(workerID),
+            });
         });
-        ipc.of[serverID].emit(workerID, initMessage);
-      });
-
-      ipc.of[serverID].on(workerID, data => {
-        onMessageCallbacks.forEach(cb => cb(data));
-      });
-
-      resolve({
-        send: message => ipc.of[serverID].emit(workerID, message),
-        onMessage: fn => {
-          onMessageCallbacks.push(fn);
-        },
-        disconnect: () => ipc.disconnect(workerID),
-      });
     });
-  });
 };

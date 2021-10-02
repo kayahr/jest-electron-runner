@@ -1,20 +1,18 @@
-/**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+/*
+ * Copyright (C) 2021 Klaus Reimer <k@ailis.de>
+ * Copyright (C) 2014-present, Facebook, Inc.
  *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @flow
+ * See LICENSE.md for licensing information.
  */
 
-import uuidv4 from 'uuid/v4';
+import * as uuid from 'uuid';
 
 export const makeRequest = (method: string, params: any) => {
   return {
     jsonrpc: '2.0',
     method,
     params,
-    id: uuidv4(),
+    id: uuid.v4(),
   };
 };
 

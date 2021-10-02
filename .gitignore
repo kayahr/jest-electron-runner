@@ -1,7 +1,4 @@
-jest-atom-runner/build
-node_modules
-packages/*/build
-yarn.lock
-yarn-error.log
-package-lock.json
-.vscode/
+coverage/
+lib/
+node_modules/
+*.tgz
