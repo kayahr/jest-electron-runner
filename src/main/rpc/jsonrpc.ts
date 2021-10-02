@@ -62,6 +62,6 @@ const makeError = (error: any, code: number = 1) => {
 
   return {
     code,
-    mesasge: JSON.stringify(error),
+    message: JSON.stringify(error),
   };
 };

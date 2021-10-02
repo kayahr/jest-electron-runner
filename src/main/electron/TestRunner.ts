@@ -128,7 +128,7 @@ export default abstract class TestRunner {
         const { maxWorkers, rootDir } = this._globalConfig;
         const concurrency = isWatch
             ? // because watch is usually used in the background, we'll only use
-            // half of the regular workers so we don't block other develper
+            // half of the regular workers so we don't block other developer
             // environment UIs
             Math.ceil(Math.min(tests.length, maxWorkers) / 2)
             : Math.min(tests.length, maxWorkers);

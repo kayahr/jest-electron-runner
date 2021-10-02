@@ -1,0 +1,31 @@
+{
+    "version": "0.2",
+    "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/master/cspell.schema.json",
+    "enabledLanguageIds": [
+        "markdown",
+        "typescript"
+    ],
+    "files": [
+        "**/*"
+    ],
+    "ignorePaths": [
+        "node_modules",
+        "coverage",
+        "package-lock.json",
+        "git",
+        "lib",
+        "*.log",
+        "*.tgz"
+    ],
+    "words": [
+        "copyfiles",
+        "IPCID",
+        "kayahr",
+        "Reimer",
+        "respawn"
+    ],
+    "language": "en",
+    "enableFiletypes": [
+        "json"
+    ]
+}
