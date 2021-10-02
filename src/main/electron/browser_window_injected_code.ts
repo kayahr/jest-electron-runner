@@ -13,10 +13,10 @@ win.ELECTRON_DISABLE_SECURITY_WARNINGS = true;
 
 // react devtools only checks for the presence of a production environment
 // in order to suggest downloading it, which means it logs a msg in a test environment
-// eslint-disable-next-line no-underscore-dangle
-if (win.__REACT_DEVTOOLS_GLOBAL_HOOK__ == null) {
-    // eslint-disable-next-line no-underscore-dangle
-    win.__REACT_DEVTOOLS_GLOBAL_HOOK__ = { isDisabled: true };
+if (win["__REACT_DEVTOOLS_GLOBAL_HOOK__"] == null) {
+    win["__REACT_DEVTOOLS_GLOBAL_HOOK__"] = {
+        isDisabled: true
+    };
 }
 
 import { Console } from "console";

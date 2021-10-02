@@ -82,8 +82,9 @@ export class RPCProcess<Methods> {
             try {
                 // TODO Why negative
                 process.kill(-this.subProcess.pid, "SIGKILL");
-                // eslint-disable-next-line no-empty
-            } catch (e) {}
+            } catch (e) {
+                // Ignored
+            }
         }
         this.subProcess?.kill("SIGKILL");
         delete this.server;

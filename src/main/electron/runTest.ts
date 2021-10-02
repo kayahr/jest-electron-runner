@@ -17,7 +17,6 @@ import type { JestEnvironment } from "@jest/environment";
 import type { TestFileEvent, TestResult } from "@jest/test-result";
 import { createScriptTransformer } from "@jest/transform";
 import type { Config } from "@jest/types";
-import chalk from "chalk";
 import * as fs from "graceful-fs";
 import * as docblock from "jest-docblock";
 import LeakDetector from "jest-leak-detector";
@@ -34,39 +33,6 @@ type RunTestInternalResult = {
     leakDetector: LeakDetector | null;
     result: TestResult;
 };
-
-function freezeConsole(
-    testConsole: BufferedConsole | CustomConsole | NullConsole,
-    config: Config.ProjectConfig,
-): void {
-    // @ts-expect-error: `_log` is `private` - we should figure out some proper API here
-    // eslint-disable-next-line func-name-matching, no-underscore-dangle
-    testConsole._log = function fakeConsolePush(
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _type: LogType,
-        message: LogMessage,
-    ): void {
-        const error = new ErrorWithStack(
-            `${chalk.red(
-                `${chalk.bold(
-                    "Cannot log after tests are done.",
-                )} Did you forget to wait for something async in your test?`,
-            )}\nAttempted to log "${message}".`,
-            fakeConsolePush,
-        );
-
-        const formattedError = formatExecError(
-            error,
-            config,
-            { noStackTrace: false },
-            undefined,
-            true,
-        );
-
-        process.stderr.write("\n" + formattedError + "\n");
-        process.exitCode = 1;
-    };
-}
 
 // Keeping the core of "runTest" as a separate function (as "runTestInternal")
 // is key to be able to detect memory leaks. Since all variables are local to
@@ -281,8 +247,6 @@ async function runTestInternal(
                 await runtime.stopCollectingV8Coverage();
             }
         }
-
-        freezeConsole(testConsole, config);
 
         const testCount = result.numPassingTests + result.numFailingTests + result.numPendingTests
             + result.numTodoTests;

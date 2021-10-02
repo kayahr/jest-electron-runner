@@ -8,7 +8,7 @@
 // $FlowFixMe flow doesn't know about console
 import { Console } from "console";
 global.console = new Console(process.stdout, process.stderr);
-import { app, BrowserWindow } from "electron";
+import { app } from "electron";
 
 import RPCConnection from "../rpc/RPCConnection";
 import JestWorkerRPC from "./rpc/JestWorkerRPC";
@@ -30,9 +30,9 @@ app.on("ready", async () => {
     // electron automatically quits if all windows are destroyed,
     // this mainWindow will keep electron running even if all other windows
     // are gone. There's probably a better way to do it
-    // eslint-disable-next-line no-unused-vars
-    const mainWindow = new BrowserWindow({ show: false, webPreferences: { nativeWindowOpen: true } });
-    mainWindow.hide();
+
+    // TODO Looks like it works without it. Maybe get rid of it for good?
+    // const mainWindow = new BrowserWindow({ show: false, webPreferences: { nativeWindowOpen: true } });
 
     if (isMain) {
         // we spin up an electron process for each test on the main process
