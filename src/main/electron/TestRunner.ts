@@ -155,7 +155,6 @@ export default abstract class TestRunner {
                     try {
                         const config = test.context.config;
                         const globalConfig = this.globalConfig;
-                        // $FlowFixMe
                         const rpc = await startWorker({ rootDir, target });
                         const testResult = await rpc.remote.runTest({
                             serializableModuleMap: test.context.moduleMap.toJSON(),

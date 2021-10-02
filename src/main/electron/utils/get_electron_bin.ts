@@ -11,7 +11,6 @@ export const getElectronBin = (from: string): string => {
     try {
         // first try to resolve from the `rootDir` of the project
         return path.resolve(
-            // $FlowFixMe wrong core flow types for require.resolve
             require.resolve("electron", { paths: [ from ] }),
             "..",
             "cli.js"
