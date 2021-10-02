@@ -20,9 +20,8 @@ const isMain = process.env.isMain === "true";
 app.commandLine.appendSwitch("high-dpi-support", "1");
 app.commandLine.appendSwitch("force-device-scale-factor", "1");
 
-// disable hardware acceleration so tests are deterministic but let user
-// enable it again on demand with environment variable
-if (process.env.JEST_ELECTRON_RUNNER_ENABLE_HARDWARE_ACCELERATION == null) {
+// Disable hardware acceleration if requested
+if (process.env.JEST_ELECTRON_RUNNER_DISABLE_HARDWARE_ACCELERATION != null) {
     app.disableHardwareAcceleration();
 }
 
