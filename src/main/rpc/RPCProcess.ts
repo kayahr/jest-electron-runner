@@ -80,7 +80,7 @@ export class RPCProcess<Methods> {
         this.server?.stop();
         if (this.subProcess != null && this.isAlive && this.subProcess.pid != null) {
             try {
-                // TODO Why negative
+                // Kill whole process group with negative PID (See `man kill`)
                 process.kill(-this.subProcess.pid, "SIGKILL");
             } catch (e) {
                 // Ignored
