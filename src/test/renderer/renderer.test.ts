@@ -5,6 +5,7 @@
 
 import { loadImage } from "../util/loadImage";
 import { resolveURI } from "../util/resolveURI";
+import { startServer } from "../util/startServer";
 
 describe("Tests in renderer process", () => {
     it("have access window object", () => {
@@ -19,5 +20,15 @@ describe("Tests in renderer process", () => {
         const image = await loadImage(resolveURI("test.png"));
         expect(image.width).toBe(640);
         expect(image.height).toBe(487);
+    });
+    it("can load images from localhost", async () => {
+        const server = await startServer();
+        try {
+            const image = await loadImage(server.baseUrl + "test.png");
+            expect(image.width).toBe(640);
+            expect(image.height).toBe(487);
+        } finally {
+            server.close();
+        }
     });
 });
