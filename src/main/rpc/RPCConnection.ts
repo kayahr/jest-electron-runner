@@ -32,7 +32,7 @@ export default class RPCConnection<Methods extends { [key: string]: (...args: an
                     this.ipc.of[serverID].emit(INITIALIZE_MESSAGE);
                 });
 
-                this.ipc.of[serverID].on(JSONRPC_EVENT_NAME, data => {
+                this.ipc.of[serverID].on(JSONRPC_EVENT_NAME, (data: string) => {
                     const { method, params, id } = parseRequest(data);
                     this.methods[method]
                         .apply(null, params)

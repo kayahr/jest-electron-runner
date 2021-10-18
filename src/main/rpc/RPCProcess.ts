@@ -66,7 +66,7 @@ export class RPCProcess<Methods> {
                     resolve(socket);
                 });
 
-                this.ipc.server.on(JSONRPC_EVENT_NAME, json => {
+                this.ipc.server.on(JSONRPC_EVENT_NAME, (json: string) => {
                     this.handleJsonRPCResponse(json);
                 });
             });

@@ -195,10 +195,11 @@ export default abstract class TestRunner {
 // memory leak if we do).We'll keep a global map of callbacks (because
 // `process` is global) and deregister the old callbacks before we register
 // new ones.
-const REGISTERED_PROCESS_EVENTS_MAP = new Map();
+const REGISTERED_PROCESS_EVENTS_MAP = new Map<string, NodeJS.BeforeExitListener>();
 const registerProcessListener = (eventName: string, cb: NodeJS.BeforeExitListener): void => {
-    if (REGISTERED_PROCESS_EVENTS_MAP.has(eventName)) {
-        process.off(eventName, REGISTERED_PROCESS_EVENTS_MAP.get(eventName));
+    const event = REGISTERED_PROCESS_EVENTS_MAP.get(eventName);
+    if (event != null) {
+        process.off(eventName, event);
     }
     process.on(eventName, cb);
     REGISTERED_PROCESS_EVENTS_MAP.set(eventName, cb);

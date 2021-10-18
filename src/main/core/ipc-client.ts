@@ -44,7 +44,7 @@ export const connectToIPCServer = ({
                 ipc.of[serverID].emit(workerID, initMessage);
             });
 
-            ipc.of[serverID].on(workerID, data => {
+            ipc.of[serverID].on(workerID, (data: string) => {
                 onMessageCallbacks.forEach(cb => cb(data));
             });
 
