@@ -31,4 +31,10 @@ describe("Tests in renderer process", () => {
             server.close();
         }
     });
+    it("can load images from an object URL", async () => {
+        const blob = await (await fetch(resolveURI("test.png"))).blob();
+        const image = await loadImage(URL.createObjectURL(blob));
+        expect(image.width).toBe(640);
+        expect(image.height).toBe(487);
+    });
 });
