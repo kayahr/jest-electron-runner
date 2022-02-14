@@ -50,6 +50,8 @@ const startWorker = async ({ rootDir, target }: { rootDir: string, target: TestR
                     `--remote-debugging-port=${process.env.JEST_ELECTRON_RUNNER_RENDERER_THREAD_DEBUG_PORT}`);
             }
             spawnArgs.push(injectedCodePath);
+            spawnArgs.push("--no-sandbox");
+            spawnArgs.push("--headless");
 
             if ("gc" in global) {
                 spawnArgs.push("--js-flags=--expose-gc");
