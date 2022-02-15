@@ -22,6 +22,9 @@ if (process.env.JEST_ELECTRON_RUNNER_DISABLE_HARDWARE_ACCELERATION != null) {
     app.disableHardwareAcceleration();
 }
 
+// Prevent Electron from closing after last window is destroyed because new ones will be created after that.
+app.on("window-all-closed", (e: Event) => e.preventDefault());
+
 app.on("ready", async () => {
     // electron automatically quits if all windows are destroyed,
     // this mainWindow will keep electron running even if all other windows

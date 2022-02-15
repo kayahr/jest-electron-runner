@@ -8,9 +8,6 @@ import { resolveURI } from "../util/resolveURI";
 import { startServer } from "../util/startServer";
 
 describe("Tests in renderer process", () => {
-    it("have access window object", () => {
-        expect(typeof window).toBe("object");
-    });
     it("can load images from a data URL", async () => {
         const image = await loadImage("data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==");
         expect(image.width).toBe(1);
