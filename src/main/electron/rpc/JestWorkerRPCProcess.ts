@@ -16,7 +16,7 @@ interface Methods {
 }
 
 export class JestWorkerRPCProcess extends RPCProcess<Methods> {
-    public initializeRemote(): Methods {
+    public override initializeRemote(): Methods {
         return {
             runTest: this.jsonRPCCall.bind(this, "runTest") as (data: IPCTestData) => Promise<TestResult>,
             shutDown: this.jsonRPCCall.bind(this, "shutDown")
