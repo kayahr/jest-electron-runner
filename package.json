@@ -90,7 +90,7 @@
         "jest-resolve": "^28.0.3",
         "jest-runtime": "^28.0.3",
         "jest-util": "^28.0.2",
-        "node-ipc": "^11.1.0",
+        "node-ipc": "^10.1.0",
         "source-map-support": "^0.5.21",
         "throat": "^6.0.1",
         "tslib": "^2.4.0",
