@@ -34,7 +34,7 @@ ipcRenderer.on(
                 testData.path,
                 testData.globalConfig,
                 testData.config,
-                getResolver(testData.config, testData.serializableModuleMap),
+                await getResolver(testData.config, testData.serializableModuleMap),
             );
 
             ipcRenderer.send(workerID, result);

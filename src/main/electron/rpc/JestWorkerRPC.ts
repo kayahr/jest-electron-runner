@@ -21,7 +21,7 @@ async function runInNode(testData: IPCTestData): Promise<TestResult> {
             testData.path,
             testData.globalConfig,
             testData.config,
-            getResolver(testData.config, testData.serializableModuleMap),
+            await getResolver(testData.config, testData.serializableModuleMap),
         );
     } catch (error) {
         console.error(error);
@@ -41,8 +41,7 @@ async function runInBrowserWindow(testData: IPCTestData): Promise<TestResult> {
             show: false,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
 

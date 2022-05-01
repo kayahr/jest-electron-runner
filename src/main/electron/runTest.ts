@@ -23,11 +23,19 @@ import LeakDetector from "jest-leak-detector";
 import { formatExecError } from "jest-message-util";
 import Resolver, { resolveTestEnvironment } from "jest-resolve";
 import type { TestRunnerContext } from "jest-runner";
-import { TestFramework } from "jest-runner/build/types";
-import type RuntimeClass from "jest-runtime";
-import { ErrorWithStack, interopRequireDefault, setGlobal } from "jest-util";
+import Runtime from "jest-runtime";
+import { ErrorWithStack, setGlobal } from "jest-util";
 import { RawSourceMap } from "source-map";
 import sourcemapSupport, { UrlAndMap } from "source-map-support";
+
+type TestFramework = (
+    globalConfig: Config.GlobalConfig,
+    config: Config.ProjectConfig,
+    environment: JestEnvironment,
+    runtime: Runtime,
+    testPath: string,
+    sendMessageToJest?: TestFileEvent
+) => Promise<TestResult>;
 
 type RunTestInternalResult = {
     leakDetector: LeakDetector | null;
@@ -44,7 +52,7 @@ type RunTestInternalResult = {
 // references to verify if there is a leak, which is not maintainable and error
 // prone. That's why "runTestInternal" CANNOT be inlined inside "runTest".
 async function runTestInternal(
-    path: Config.Path,
+    path: string,
     globalConfig: Config.GlobalConfig,
     config: Config.ProjectConfig,
     resolver: Resolver,
@@ -81,13 +89,6 @@ async function runTestInternal(
             ? require.resolve("jest-jasmine2")
             : config.testRunner,
     );
-    const Runtime = (interopRequireDefault(
-        config.moduleLoader != null
-            // eslint-disable-next-line @typescript-eslint/no-require-imports, global-require
-            ? require(config.moduleLoader)
-            // eslint-disable-next-line @typescript-eslint/no-require-imports, global-require
-            : require("jest-runtime"),
-    ) as { default: typeof RuntimeClass }).default;
 
     const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
     const consoleFormatter = (type: LogType, message: LogMessage): string =>
@@ -108,7 +109,7 @@ async function runTestInternal(
         testConsole = new BufferedConsole();
     }
 
-    const environment = new TestEnvironment(config, {
+    const environment = new TestEnvironment({ projectConfig: config, globalConfig }, {
         console: testConsole,
         docblockPragmas,
         testPath: path
@@ -299,7 +300,7 @@ async function runTestInternal(
 }
 
 export default async function runTest(
-    path: Config.Path,
+    path: string,
     globalConfig: Config.GlobalConfig,
     config: Config.ProjectConfig,
     resolver: Resolver,
