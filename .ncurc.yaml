@@ -1,0 +1,2 @@
+reject:
+  - "node-ipc" # Rejected because of https://github.com/advisories/GHSA-3mpp-xfvh-qh37
