@@ -12,14 +12,14 @@ This project is a fork of Facebook's [@jest-runner/electron](https://github.com/
 
 ## Getting Started
 
-1. Install jest electron runner `npm i --save-dev @kayahr/jest-runner-electron`
+1. Install jest electron runner `npm i --save-dev @kayahr/jest-electron-runner`
 2. Add one of these lines to your jest config (in `package.json` or inside your `jest.config.js` file), depending on the process you wish to test. If you wish to test them in parallel, see the tips section below.
 
     - Main process
     ```js
         {
           // ...
-          runner: '@kayahr/jest-runner-electron/main',
+          runner: '@kayahr/jest-electron-runner/main',
           testEnvironment: 'node',
         }
     ```
@@ -27,8 +27,8 @@ This project is a fork of Facebook's [@jest-runner/electron](https://github.com/
     ```js
         {
           // ...
-          runner: '@kayahr/jest-runner-electron',
-          testEnvironment: '@kayahr/jest-runner-electron/environment',
+          runner: '@kayahr/jest-electron-runner',
+          testEnvironment: '@kayahr/jest-electron-runner/environment',
         }
     ```
 3. Run jest.
@@ -51,14 +51,14 @@ module.exports = {
   projects: [
     {
       ...common,
-      runner: '@kayahr/jest-runner-electron/main',
+      runner: '@kayahr/jest-electron-runner/main',
       testEnvironment: 'node',
       testMatch: ['**/__tests__/**/*.(spec|test).js']
     },
     {
       ...common,
-      runner: '@kayahr/jest-runner-electron',
-      testEnvironment: '@kayahr/jest-runner-electron/environment',
+      runner: '@kayahr/jest-electron-runner',
+      testEnvironment: '@kayahr/jest-electron-runner/environment',
       testMatch: ['**/__tests__/**/*.(spec|test).tsx']
     }
   ]
