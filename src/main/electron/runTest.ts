@@ -103,7 +103,7 @@ async function runTestInternal(
 
     if (globalConfig.silent === true) {
         testConsole = new NullConsole(consoleOut, consoleOut, consoleFormatter);
-    } else if (globalConfig.verbose === true) {
+    } else if (globalConfig.verbose === true && process.type !== "renderer") {
         testConsole = new CustomConsole(consoleOut, consoleOut, consoleFormatter);
     } else {
         testConsole = new BufferedConsole();
