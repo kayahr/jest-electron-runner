@@ -21,7 +21,7 @@ async function runInNode(testData: IPCTestData): Promise<TestResult> {
             testData.path,
             testData.globalConfig,
             testData.config,
-            await getResolver(testData.config, testData.serializableModuleMap),
+            getResolver(testData.config, testData.serializableModuleMap)
         );
     } catch (error) {
         console.error(error);

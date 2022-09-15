@@ -38,29 +38,6 @@ const wrapResolver = (resolver: Resolver): Resolver => {
     return resolver;
 };
 
-const resolvers = new WeakMap<Config.ProjectConfig, Resolver>();
-export async function getResolver(config: Config.ProjectConfig, serializableModuleMap: SerializableModuleMap):
-        Promise<Resolver> {
-    // In watch mode, the raw module map with all haste modules is passed from
-    // the test runner to the watch command. This is because jest-haste-map's
-    // watch mode does not persist the haste map on disk after every file change.
-    // To make this fast and consistent, we pass it from the TestRunner.
-    if (serializableModuleMap != null) {
-        const moduleMap = HasteMap.getModuleMapFromJSON(serializableModuleMap);
-        return wrapResolver(
-            Runtime.createResolver(config, moduleMap)
-        );
-    } else {
-        let resolver = resolvers.get(config);
-        if (resolver == null) {
-            resolver = wrapResolver(
-                Runtime.createResolver(
-                    config,
-                    (await Runtime.createHasteMap(config)).readModuleMap(),
-                ),
-            );
-            resolvers.set(config, resolver);
-        }
-        return resolver;
-    }
+export function getResolver(config: Config.ProjectConfig, serializableModuleMap: SerializableModuleMap): Resolver {
+    return wrapResolver(Runtime.createResolver(config, HasteMap.getModuleMapFromJSON(serializableModuleMap)));
 }
