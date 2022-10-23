@@ -34,9 +34,14 @@ async function runInNode(testData: IPCTestData): Promise<TestResult> {
     }
 }
 
+let initialized = false;
 async function runInBrowserWindow(testData: IPCTestData): Promise<TestResult> {
     try {
         const workerID = makeUniqWorkerId();
+        if (!initialized) {
+          initialized = true;
+          require("@electron/remote/main").initialize();
+        }
         const win = new BrowserWindow({
             show: false,
             webPreferences: {
@@ -44,6 +49,7 @@ async function runInBrowserWindow(testData: IPCTestData): Promise<TestResult> {
                 contextIsolation: false
             }
         });
+        require("@electron/remote/main").enable(win.webContents);
 
         win.webContents.on("console-message", (event, level, message, line, sourceId) => {
             if (/\bdeprecated\b/i.exec(message) != null) {
