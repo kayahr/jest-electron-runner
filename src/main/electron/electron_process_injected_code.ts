@@ -37,6 +37,8 @@ app.on("ready", async () => {
         // we spin up an electron process for each test on the main process
         // which pops up an icon for each on macOs. Hiding them is less intrusive
         app.dock?.hide();
+    } else {
+        (await import("@electron/remote/main")).initialize();
     }
 
     const rpcConnection = new RPCConnection(JestWorkerRPC);

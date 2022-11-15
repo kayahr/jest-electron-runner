@@ -11,4 +11,8 @@ describe("Tests in renderer process", () => {
         // This will freeze Jest when test fails, even the test timeout doesn't trigger.
         window.close();
     });
+    it("can use remote module", async () => {
+        const currentWindow = (await import("@electron/remote")).getCurrentWindow();
+        expect(currentWindow).toHaveProperty("show");
+    });
 });
