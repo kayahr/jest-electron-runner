@@ -44,7 +44,10 @@ async function runInBrowserWindow(testData: IPCTestData): Promise<TestResult> {
                 contextIsolation: false
             }
         });
-
+        win.on("close", event => {
+            // Prevent closing the window because this breaks the test runner
+            event.preventDefault();
+        });
         win.webContents.on("console-message", (event, level, message, line, sourceId) => {
             if (/\bdeprecated\b/i.exec(message) != null) {
                 // Ignore deprecation warnings

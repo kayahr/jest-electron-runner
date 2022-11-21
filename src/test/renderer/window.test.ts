@@ -7,4 +7,8 @@ describe("Tests in renderer process", () => {
     it("have access to window object", () => {
         expect(typeof window).toBe("object");
     });
+    it("can not be closed", () => {
+        // This will freeze Jest when test fails, even the test timeout doesn't trigger.
+        window.close();
+    });
 });
