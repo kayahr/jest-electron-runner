@@ -56,7 +56,7 @@ const startWorker = async ({ rootDir, target }: { rootDir: string, target: TestR
             if ("gc" in global) {
                 spawnArgs.push("--js-flags=--expose-gc");
             }
-            return spawn(currentNodeBinPath, spawnArgs, {
+            const child = spawn(currentNodeBinPath, spawnArgs, {
                 stdio: [
                     "inherit",
                     // redirect child process' stdout to parent process stderr, so it
@@ -72,7 +72,19 @@ const startWorker = async ({ rootDir, target }: { rootDir: string, target: TestR
                 },
                 detached: process.env.JEST_ELECTRON_RUNNER_DISABLE_PROCESS_DETACHMENT == null
             });
-        },
+            DISPOSABLES.add(() => {
+                if (child.pid != null) {
+                    try {
+                        // Kill whole process group with negative PID (See `man kill`)
+                        process.kill(-child.pid, "SIGKILL");
+                    } catch {
+                        // Ignored
+                    }
+                }
+                child.kill("SIGKILL");
+            });
+            return child;
+        }
     );
 
     if (isRenderer(target)) {
@@ -143,6 +155,12 @@ export default abstract class TestRunner {
         });
 
         registerProcessListeners(cleanup);
+
+        // Cleanup when runner is terminated with Ctrl-C
+        process.on("SIGINT", () => {
+            cleanup();
+            process.exit();
+        });
 
         // Startup the process for renderer tests, since it'll be one
         // process that every test will share.
