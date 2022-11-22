@@ -8,12 +8,12 @@
 import type { Config } from "@jest/types";
 import { SerializableModuleMap } from "jest-haste-map";
 
-export type IPCTestData = {
-  serializableModuleMap: SerializableModuleMap,
-  config: Config.ProjectConfig,
-  globalConfig: Config.GlobalConfig,
-  path: string,
-};
+export interface IPCTestData {
+    serializableModuleMap: SerializableModuleMap;
+    config: Config.ProjectConfig;
+    globalConfig: Config.GlobalConfig;
+    path: string;
+}
 
 export enum TestRunnerTarget {
     RENDERER = "renderer",

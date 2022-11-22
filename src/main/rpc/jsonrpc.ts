@@ -5,7 +5,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import * as uuid from "uuid";
+import { v4 } from "uuid";
 
 export interface Request {
     jsonrpc: string;
@@ -19,12 +19,12 @@ export interface SerializedRequest {
     json: string;
 }
 
-export function makeRequest(method: string, params: unknown[]): Request {
+function makeRequest(method: string, params: unknown[]): Request {
     return {
         jsonrpc: "2.0",
         method,
         params,
-        id: uuid.v4()
+        id: v4()
     };
 }
 

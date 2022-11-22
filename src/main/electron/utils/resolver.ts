@@ -15,7 +15,7 @@ const ATOM_BUILTIN_MODULES = new Set([ "atom", "electron" ]);
 // Atom has builtin modules that can't go through jest transform/cache
 // pipeline. There's no easy way to add custom modules to jest, so we'll wrap
 // jest Resolver object and make it bypass atom's modules.
-const wrapResolver = (resolver: Resolver): Resolver => {
+function wrapResolver(resolver: Resolver): Resolver {
     const isCoreModule = resolver.isCoreModule;
     const resolveModule = resolver.resolveModule;
 
@@ -36,7 +36,7 @@ const wrapResolver = (resolver: Resolver): Resolver => {
     };
 
     return resolver;
-};
+}
 
 export function getResolver(config: Config.ProjectConfig, serializableModuleMap: SerializableModuleMap): Resolver {
     return wrapResolver(Runtime.createResolver(config, HasteMap.getModuleMapFromJSON(serializableModuleMap)));

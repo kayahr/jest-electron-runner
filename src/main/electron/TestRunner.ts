@@ -5,8 +5,9 @@
  * See LICENSE.md for licensing information.
  */
 
+import { spawn } from "node:child_process";
+
 import type { Config } from "@jest/types";
-import { spawn } from "child_process";
 import { OnTestFailure, OnTestStart, OnTestSuccess, Test, TestRunnerOptions, TestWatcher } from "jest-runner";
 import throat from "throat";
 
@@ -27,17 +28,15 @@ export function isRenderer(target: TestRunnerTarget): target is TestRunnerTarget
     return target === TestRunnerTarget.RENDERER;
 }
 
-const startWorker = async ({ rootDir, target }: { rootDir: string, target: TestRunnerTarget }):
-        Promise<JestWorkerRPCProcess> => {
+async function startWorker({ rootDir, target }: { rootDir: string, target: TestRunnerTarget }):
+        Promise<JestWorkerRPCProcess> {
     if (isRenderer(target) && jestWorkerRPCProcess != null) {
         return jestWorkerRPCProcess;
     }
 
     const proc = new JestWorkerRPCProcess(
         ({ serverID }) => {
-            const injectedCodePath = require.resolve(
-                "./electron_process_injected_code.js",
-            );
+            const injectedCodePath = require.resolve("./electron_process_injected_code.js");
 
             const currentNodeBinPath = process.execPath;
             const electronBin = getElectronBin(rootDir);
@@ -97,10 +96,27 @@ const startWorker = async ({ rootDir, target }: { rootDir: string, target: TestR
     });
 
     return proc;
-};
+}
 
-const registerProcessListeners = (cleanup: Function): void => {
-    registerProcessListener("SIGINT2", () => {
+// Because in watch mode the TestRunner is recreated each time, we have
+// to make sure we're not registering new process events on every test
+// run trigger (at some point EventEmitter will start complaining about a
+// memory leak if we do). We'll keep a global map of callbacks (because
+// `process` is global) and deregister the old callbacks before we register
+// new ones.
+const REGISTERED_PROCESS_EVENTS_MAP = new Map<string, NodeJS.BeforeExitListener>();
+
+function registerProcessListener(eventName: string, cb: NodeJS.BeforeExitListener): void {
+    const event = REGISTERED_PROCESS_EVENTS_MAP.get(eventName);
+    if (event != null) {
+        process.off(eventName, event);
+    }
+    process.on(eventName, cb);
+    REGISTERED_PROCESS_EVENTS_MAP.set(eventName, cb);
+}
+
+function registerProcessListeners(cleanup: Function): void {
+    registerProcessListener("SIGINT", () => {
         cleanup();
         process.exit(130);
     });
@@ -116,7 +132,7 @@ const registerProcessListeners = (cleanup: Function): void => {
         // a cleanup function to Jest so it runs it instead
         process.exit(1);
     });
-};
+}
 
 const DISPOSABLES = new Set<Function>();
 
@@ -135,7 +151,7 @@ export default abstract class TestRunner {
         onStart: OnTestStart,
         onResult: OnTestSuccess,
         onFailure: OnTestFailure,
-        options: TestRunnerOptions,
+        options: TestRunnerOptions
     ): Promise<void> {
         const isWatch = this.globalConfig.watch || this.globalConfig.watchAll;
         const { maxWorkers, rootDir } = this.globalConfig;
@@ -155,12 +171,6 @@ export default abstract class TestRunner {
         });
 
         registerProcessListeners(cleanup);
-
-        // Cleanup when runner is terminated with Ctrl-C
-        process.on("SIGINT", () => {
-            cleanup();
-            process.exit();
-        });
 
         // Startup the process for renderer tests, since it'll be one
         // process that every test will share.
@@ -198,8 +208,8 @@ export default abstract class TestRunner {
                             stack: error instanceof Error ? error.stack : null
                         });
                     }
-                }),
-            ),
+                })
+            )
         );
 
         if (!isWatch) {
@@ -207,20 +217,3 @@ export default abstract class TestRunner {
         }
     }
 }
-
-
-// Because in watch mode the TestRunner is recreated each time, we have
-// to make sure we're not registering new process events on every test
-// run trigger (at some point EventEmitter will start complaining about a
-// memory leak if we do).We'll keep a global map of callbacks (because
-// `process` is global) and deregister the old callbacks before we register
-// new ones.
-const REGISTERED_PROCESS_EVENTS_MAP = new Map<string, NodeJS.BeforeExitListener>();
-const registerProcessListener = (eventName: string, cb: NodeJS.BeforeExitListener): void => {
-    const event = REGISTERED_PROCESS_EVENTS_MAP.get(eventName);
-    if (event != null) {
-        process.off(eventName, event);
-    }
-    process.on(eventName, cb);
-    REGISTERED_PROCESS_EVENTS_MAP.set(eventName, cb);
-};

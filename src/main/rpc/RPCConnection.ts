@@ -39,13 +39,13 @@ export default class RPCConnection<Methods extends { [key: string]: (...args: an
                         .then(result => {
                             this.ipc.of[serverID].emit(
                                 JSONRPC_EVENT_NAME,
-                                serializeResultResponse(result, id),
+                                serializeResultResponse(result, id)
                             );
                         })
                         .catch(error => {
                             this.ipc.of[serverID].emit(
                                 JSONRPC_EVENT_NAME,
-                                serializeErrorResponse(error, id),
+                                serializeErrorResponse(error, id)
                             );
                         });
                 });

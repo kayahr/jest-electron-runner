@@ -5,18 +5,14 @@
  * See LICENSE.md for licensing information.
  */
 
-import * as path from "path";
+import { resolve } from "node:path";
 
-export const getElectronBin = (from: string): string => {
+export function getElectronBin(from: string): string {
     try {
         // first try to resolve from the `rootDir` of the project
-        return path.resolve(
-            require.resolve("electron", { paths: [ from ] }),
-            "..",
-            "cli.js"
-        );
+        return resolve(require.resolve("electron", { paths: [ from ] }), "../cli.js");
     } catch (error) {
         // default to electron included in this package's dependencies
-        return path.resolve(require.resolve("electron"), "..", "cli.js");
+        return resolve(require.resolve("electron"), "../cli.js");
     }
-};
+}

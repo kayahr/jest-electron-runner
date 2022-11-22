@@ -5,25 +5,46 @@
  * See LICENSE.md for licensing information.
  */
 
-import { ChildProcess, spawn } from "child_process";
-import { Socket } from "net";
+import { ChildProcess, spawn } from "node:child_process";
+import { Socket } from "node:net";
+import { resolve } from "node:path";
+
 import ipc from "node-ipc";
-import * as path from "path";
 
 import { makeUniqServerId } from "../core/utils";
 import { INITIALIZE_MESSAGE, JSONRPC_EVENT_NAME } from "./constants";
 import { parseResponse, serializeRequest } from "./jsonrpc";
 
-type SpawnFn = ({ serverID }: { serverID: string}) => ChildProcess;
-type SpawnNode = {
-    useBabel?: boolean,
-    initFile: string,
-};
+export type SpawnFn = ({ serverID }: { serverID: string}) => ChildProcess;
+
+export interface SpawnNode {
+    useBabel?: boolean;
+    initFile: string;
+}
 
 interface RequestError {
     code: number,
     message: string,
     data?: string
+}
+
+function getBabelNodeBin(): string {
+    return resolve(__dirname, "../../../node_modules/.bin/babel-node");
+}
+
+function makeSpawnNodeFn(serverID: string, { initFile, useBabel }: SpawnNode): SpawnFn {
+    return () => {
+        const bin = useBabel === true ? getBabelNodeBin() : "node";
+
+        return spawn(bin, [ initFile ], {
+            stdio: [ "inherit", process.stderr, "inherit" ],
+            env: {
+                ...process.env,
+                JEST_SERVER_ID: serverID
+            },
+            detached: true
+        });
+    };
 }
 
 export class RPCProcess<Methods> {
@@ -127,22 +148,4 @@ export class RPCProcess<Methods> {
             throw new Error("RPCProcess need to be started before making any RPC calls");
         }
     }
-}
-
-const getBabelNodeBin = (): string =>
-    path.resolve(__dirname, "../../../node_modules/.bin/babel-node");
-
-function makeSpawnNodeFn(serverID: string, { initFile, useBabel }: SpawnNode): SpawnFn {
-    return () => {
-        const bin = useBabel === true ? getBabelNodeBin() : "node";
-
-        return spawn(bin, [ initFile ], {
-            stdio: [ "inherit", process.stderr, "inherit" ],
-            env: {
-                ...process.env,
-                JEST_SERVER_ID: serverID
-            },
-            detached: true
-        });
-    };
 }

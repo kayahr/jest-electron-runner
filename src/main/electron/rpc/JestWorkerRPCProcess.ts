@@ -10,7 +10,7 @@ import type { TestResult } from "@jest/test-result";
 import { RPCProcess } from "../../rpc/RPCProcess";
 import { IPCTestData } from "../../types";
 
-interface Methods {
+export interface Methods {
     runTest(data: IPCTestData): Promise<TestResult>;
     shutDown(): void;
 }

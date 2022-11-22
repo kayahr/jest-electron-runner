@@ -3,7 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import * as path from "path";
+import { resolve } from "node:path";
 
 /**
  * Resolves a filename relative to the src/test/data directory to an absolute file URI which Electron can load from.
@@ -12,5 +12,5 @@ import * as path from "path";
  * @return The absolute file URI.
  */
 export function resolveURI(filename: string): string {
-    return "file://" + path.resolve(__dirname, "..", "..", "..", "src", "test", "data", filename).replace(/\\/g, "/");
+    return "file://" + resolve(__dirname, "..", "..", "..", "src", "test", "data", filename).replace(/\\/g, "/");
 }

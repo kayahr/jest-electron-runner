@@ -5,10 +5,11 @@
  * See LICENSE.md for licensing information.
  */
 
+import { Context, Script } from "node:vm";
+
 import type { Config } from "@jest/types";
-import * as mock from "jest-mock";
+import { ModuleMocker } from "jest-mock";
 import { installCommonGlobals } from "jest-util";
-import { Context, Script } from "vm";
 
 /** Special context which is handled specially in the hacked runInContext method below */
 const RUN_IN_THIS_CONTEXT = {};
@@ -37,7 +38,7 @@ export default class ElectronEnvironment {
 
     public constructor(config: Config.ProjectConfig) {
         this.global = global;
-        this.moduleMocker = new mock.ModuleMocker(global);
+        this.moduleMocker = new ModuleMocker(global);
         this.fakeTimers = {
             useFakeTimers() {
                 throw new Error("fakeTimers are not supported in electron environment");

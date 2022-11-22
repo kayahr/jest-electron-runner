@@ -29,7 +29,7 @@ async function runInNode(testData: IPCTestData): Promise<TestResult> {
             testData.path,
             error instanceof Error ? error : new Error("" + error),
             testData.config,
-            testData.globalConfig,
+            testData.globalConfig
         );
     }
 }
@@ -70,7 +70,7 @@ async function runInBrowserWindow(testData: IPCTestData): Promise<TestResult> {
             testData.path,
             error instanceof Error ? error : new Error("" + error),
             testData.config,
-            testData.globalConfig,
+            testData.globalConfig
         );
         return testResult;
     }

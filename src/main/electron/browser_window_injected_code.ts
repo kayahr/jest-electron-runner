@@ -45,10 +45,10 @@ ipcRenderer.on(
                     testData.path,
                     error instanceof Error ? error : new Error("" + error),
                     testData.config,
-                    testData.globalConfig,
-                ),
+                    testData.globalConfig
+                )
             );
             console.error(error);
         }
-    },
+    }
 );

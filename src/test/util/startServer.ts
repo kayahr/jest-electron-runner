@@ -3,26 +3,29 @@
  * See LICENSE.md for licensing information.
  */
 
-import express from "express";
-import * as http from "http";
-import * as path from "path";
+import { Server } from "node:http";
+import { resolve } from "node:path";
 
-export type Server = {
+import express from "express";
+
+export interface TestServer {
     baseUrl: string;
     close: () => void;
-};
+}
 
-async function listen(port: number): Promise<http.Server> {
-    return new Promise<http.Server>((resolve, reject) => {
+const webRoot =  resolve(__dirname, "../../../src/test/data");
+
+async function listen(port: number): Promise<Server> {
+    return new Promise<Server>((resolve, reject) => {
         const app = express();
-        app.use(express.static(path.resolve(__dirname, "..", "..", "..", "src", "test", "data")));
+        app.use(express.static(webRoot));
         const server = app.listen(port, () => {
             resolve(server);
         }).on("error", reject);
     });
 }
 
-export async function startServer(): Promise<Server> {
+export async function startServer(): Promise<TestServer> {
     let retries = 5;
     while (true) {
         const port = 1024 + Math.floor(Math.random() * 64511);

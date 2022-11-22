@@ -17,8 +17,8 @@ import type { JestEnvironment } from "@jest/environment";
 import type { TestFileEvent, TestResult } from "@jest/test-result";
 import { createScriptTransformer } from "@jest/transform";
 import type { Config } from "@jest/types";
-import * as fs from "graceful-fs";
-import * as docblock from "jest-docblock";
+import { readFileSync } from "graceful-fs";
+import { extract, parse } from "jest-docblock";
 import LeakDetector from "jest-leak-detector";
 import { formatExecError } from "jest-message-util";
 import Resolver, { resolveTestEnvironment } from "jest-resolve";
@@ -57,10 +57,10 @@ async function runTestInternal(
     config: Config.ProjectConfig,
     resolver: Resolver,
     context?: TestRunnerContext,
-    sendMessageToJest?: TestFileEvent,
+    sendMessageToJest?: TestFileEvent
 ): Promise<RunTestInternalResult> {
-    const testSource = fs.readFileSync(path, "utf8");
-    const docblockPragmas = docblock.parse(docblock.extract(testSource));
+    const testSource = readFileSync(path, "utf-8");
+    const docblockPragmas = parse(extract(testSource));
     const customEnvironment = docblockPragmas["jest-environment"];
 
     let testEnvironment = config.testEnvironment;
@@ -69,8 +69,8 @@ async function runTestInternal(
         if (Array.isArray(customEnvironment)) {
             throw new Error(
                 `You can only define a single test environment through docblocks, got "${customEnvironment.join(
-                    ", ",
-                )}"`,
+                    ", "
+                )}"`
             );
         }
         testEnvironment = resolveTestEnvironment({
@@ -87,7 +87,7 @@ async function runTestInternal(
     const testFramework: TestFramework = await transformer.requireAndTranspileModule(
         process.env.JEST_JASMINE === "1"
             ? require.resolve("jest-jasmine2")
-            : config.testRunner,
+            : config.testRunner
     );
 
     const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
@@ -96,7 +96,7 @@ async function runTestInternal(
             // 4 = the console call is buried 4 stack frames deep
             BufferedConsole.write([], type, message, 4),
             config,
-            globalConfig,
+            globalConfig
         );
 
     let testConsole;
@@ -130,7 +130,7 @@ async function runTestInternal(
     setGlobal(
         environment.global as unknown as typeof globalThis,
         "console",
-        testConsole,
+        testConsole
     );
 
     const runtime = new Runtime(
@@ -171,7 +171,7 @@ async function runTestInternal(
             if (sourceMapSource != null) {
                 try {
                     return {
-                        map: JSON.parse(fs.readFileSync(sourceMapSource, "utf8")) as RawSourceMap | string,
+                        map: JSON.parse(readFileSync(sourceMapSource, "utf-8")) as RawSourceMap | string,
                         url: source
                     } as UrlAndMap;
                 } catch {
@@ -186,7 +186,7 @@ async function runTestInternal(
     runtime
         .requireInternalModule<typeof import("source-map-support")>(
             require.resolve("source-map-support"),
-            "source-map-support",
+            "source-map-support"
         )
         .install(sourcemapOptions);
 
@@ -199,7 +199,7 @@ async function runTestInternal(
         environment.global.process.exit = function exit(code?: number) {
             const error = new ErrorWithStack(
                 `process.exit called with "${code}"`,
-                exit,
+                exit
             );
 
             const formattedError = formatExecError(
@@ -207,7 +207,7 @@ async function runTestInternal(
                 config,
                 { noStackTrace: false },
                 undefined,
-                true,
+                true
             );
 
             process.stderr.write(formattedError);
@@ -234,7 +234,7 @@ async function runTestInternal(
                 environment,
                 runtime,
                 path,
-                sendMessageToJest,
+                sendMessageToJest
             );
         } catch (err) {
             if (err instanceof Error) {
@@ -304,7 +304,7 @@ export default async function runTest(
     config: Config.ProjectConfig,
     resolver: Resolver,
     context?: TestRunnerContext,
-    sendMessageToJest?: TestFileEvent,
+    sendMessageToJest?: TestFileEvent
 ): Promise<TestResult> {
     const { leakDetector, result } = await runTestInternal(
         path,
@@ -312,7 +312,7 @@ export default async function runTest(
         config,
         resolver,
         context,
-        sendMessageToJest,
+        sendMessageToJest
     );
 
     if (leakDetector != null) {

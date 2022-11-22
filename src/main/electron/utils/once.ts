@@ -5,8 +5,7 @@
  * See LICENSE.md for licensing information.
  */
 
-export function once<Args extends unknown[], Result>(
-        fn: (...args: Args) => Result): (...args: Args) => Result {
+export function once<Args extends unknown[], Result>(fn: (...args: Args) => Result): (...args: Args) => Result {
     const none = Symbol("none");
     let result: Result | typeof none = none;
     return (...args: Args): Result => {
