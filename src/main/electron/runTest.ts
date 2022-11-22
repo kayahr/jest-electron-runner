@@ -5,6 +5,9 @@
  * See LICENSE.md for licensing information.
  */
 
+import { readFileSync } from "node:fs";
+import { readFile } from "node:fs/promises";
+
 import {
     BufferedConsole,
     CustomConsole,
@@ -17,7 +20,6 @@ import type { JestEnvironment } from "@jest/environment";
 import type { TestFileEvent, TestResult } from "@jest/test-result";
 import { createScriptTransformer } from "@jest/transform";
 import type { Config } from "@jest/types";
-import { readFileSync } from "graceful-fs";
 import { extract, parse } from "jest-docblock";
 import LeakDetector from "jest-leak-detector";
 import { formatExecError } from "jest-message-util";
@@ -59,7 +61,7 @@ async function runTestInternal(
     context?: TestRunnerContext,
     sendMessageToJest?: TestFileEvent
 ): Promise<RunTestInternalResult> {
-    const testSource = readFileSync(path, "utf-8");
+    const testSource = await readFile(path, "utf-8");
     const docblockPragmas = parse(extract(testSource));
     const customEnvironment = docblockPragmas["jest-environment"];
 
