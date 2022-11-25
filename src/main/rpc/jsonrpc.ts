@@ -28,11 +28,33 @@ function makeRequest(method: string, params: unknown[]): Request {
     };
 }
 
+/**
+ * Stringifies the given data and solves circular references by removing objects that already have been seen before.
+ * This solves wrong test result reports where Jest actually wants to show a diff but instead shows a circular
+ * reference JSON error from this module.
+ *
+ * @param data - The data to stringify.
+ * @returns the stringified data.
+ */
+function stringify(data: unknown): string {
+    const seen = new WeakSet<Object>();
+    return JSON.stringify(data, (key, value: unknown) => {
+        if (value instanceof Object) {
+            if (seen.has(value)) {
+                return undefined;
+            } else {
+                seen.add(value);
+            }
+        }
+        return value;
+    });
+}
+
 export function serializeRequest(method: string, params: unknown[]): SerializedRequest {
     const request = makeRequest(method, params);
     return {
         id: request.id,
-        json: JSON.stringify(request)
+        json: stringify(request)
     };
 }
 
@@ -59,7 +81,7 @@ export function serializeResultResponse(result: unknown, id: string): string {
         result,
         id
     };
-    return JSON.stringify(response);
+    return stringify(response);
 }
 
 export function serializeErrorResponse(error: unknown, id: string): string {
@@ -68,7 +90,7 @@ export function serializeErrorResponse(error: unknown, id: string): string {
         error: makeError(error),
         id
     };
-    return JSON.stringify(response);
+    return stringify(response);
 }
 
 export function parseResponse(json: string): Response {
@@ -85,6 +107,6 @@ function makeError(error: unknown, code: number = 1): ResponseError {
     }
     return {
         code,
-        message: JSON.stringify(error)
+        message: stringify(error)
     };
 }
