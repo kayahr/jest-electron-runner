@@ -11,4 +11,10 @@ describe("Tests in renderer process", () => {
         // This will freeze Jest when test fails, even the test timeout doesn't trigger.
         window.close();
     });
+    it("can not access garbage collector (because not enabled in this test environment)", () => {
+        expect(typeof gc).toBe("undefined");
+    });
+    it("Sees device pixel ratio as configured in tet environment options", () => {
+        expect(window.devicePixelRatio).toBe(7);
+    });
 });

@@ -38,6 +38,13 @@
                 "displayName": "main",
                 "runner": "./lib/main/electron/TestRunnerMain",
                 "testEnvironment": "node",
+                "testEnvironmentOptions": {
+                    "electron": {
+                        "options": [
+                            "js-flags=--expose-gc"
+                        ]
+                    }
+                },
                 "testMatch": [
                     "<rootDir>/lib/test/main/**/*.test.js"
                 ]
@@ -46,6 +53,13 @@
                 "displayName": "renderer",
                 "runner": "./lib/main/electron/TestRunnerRenderer",
                 "testEnvironment": "./lib/main/electron/Environment",
+                "testEnvironmentOptions": {
+                    "electron": {
+                        "options": [
+                            "force-device-scale-factor=7"
+                        ]
+                    }
+                },
                 "testMatch": [
                     "<rootDir>/lib/test/renderer/**/*.test.js"
                 ]
@@ -62,6 +76,7 @@
         "@types/express": "4.17.14",
         "@types/jest": "29.2.3",
         "@types/node-ipc": "9.2.0",
+        "@types/shell-quote": "1.7.1",
         "@types/source-map-support": "0.5.6",
         "@types/uuid": "8.3.4",
         "@typescript-eslint/eslint-plugin": "5.44.0",
@@ -90,6 +105,7 @@
         "jest-runtime": "^29.3.1",
         "jest-util": "^29.3.1",
         "node-ipc": "^10.1.0",
+        "shell-quote": "^1.7.4",
         "source-map-support": "^0.5.21",
         "throat": "^6.0.1",
         "tslib": "^2.4.1",

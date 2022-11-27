@@ -7,7 +7,8 @@
 
 import { Context, Script } from "node:vm";
 
-import type { Config } from "@jest/types";
+import { JestEnvironment, JestEnvironmentConfig } from "@jest/environment";
+import type { Global } from "@jest/types";
 import { ModuleMocker } from "jest-mock";
 import { installCommonGlobals } from "jest-util";
 
@@ -31,26 +32,38 @@ Script.prototype.runInContext = function(context, options): unknown {
     }
 };
 
-export default class ElectronEnvironment {
-    public global: Object;
-    public moduleMocker: Object;
-    public fakeTimers: Object;
+/**
+ * Creates the jest global. This environment uses globalThis as global and we try to keep it as type-safe as possible
+ * to detect problems with newer Jest versions early.
+ *
+ * @returns The jest global object.
+ */
+function createGlobal(): Global.Global {
+    const jestGlobal: typeof globalThis & { [ "__coverage__" ] ?: unknown } = global;
+    jestGlobal["__coverage__"] = {};
+    return jestGlobal as Global.Global;
+}
 
-    public constructor(config: Config.ProjectConfig) {
-        this.global = global;
+/**
+ * Jest environment for running tests in electron.
+ */
+export default class ElectronEnvironment implements JestEnvironment {
+    public readonly global: Global.Global;
+    public readonly moduleMocker: ModuleMocker;
+    public readonly fakeTimers = null;
+    public readonly fakeTimersModern = null;
+    public readonly handleTestEvent = undefined;
+    public readonly exportConditions = undefined;
+
+    public constructor(config: JestEnvironmentConfig) {
+        this.global = createGlobal();
         this.moduleMocker = new ModuleMocker(global);
-        this.fakeTimers = {
-            useFakeTimers() {
-                throw new Error("fakeTimers are not supported in electron environment");
-            },
-            clearAllTimers() {}
-        };
 
         // Jest seems to set a new process property and this causes trouble in write-file-atomic module used
         // in Jest's cache transform stuff. So we remember the original property and restore it after Jest
-        // installed it's common globals
+        // installed its common globals
         const process = global.process;
-        installCommonGlobals(global, config.globals);
+        installCommonGlobals(global, config.projectConfig.globals);
         global.process = process;
     }
 

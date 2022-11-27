@@ -8,17 +8,17 @@
 import { app } from "electron";
 
 import RPCConnection from "../rpc/RPCConnection";
+import { ElectronEnvironmentOptions } from "./Options";
 import JestWorkerRPC from "./rpc/JestWorkerRPC";
 
 const isMain = process.env.isMain === "true";
 
-// for testing purposes, it is probably a good idea to keep everything at
-// the same scale so that renders do not vary from device to device.
-app.commandLine.appendSwitch("high-dpi-support", "1");
-app.commandLine.appendSwitch("force-device-scale-factor", "1");
+// Read electron environment options which are passed in from runner through an environment variable
+const options = JSON.parse(process.env.JEST_ELECTRON_RUNNER_ENVIRONMENT_OPTIONS_JSON ?? "{}") as
+    ElectronEnvironmentOptions;
 
-// Disable hardware acceleration if requested
-if (process.env.JEST_ELECTRON_RUNNER_DISABLE_HARDWARE_ACCELERATION != null) {
+// Configure electron according to specified options
+if (options.electron?.disableHardwareAcceleration === true) {
     app.disableHardwareAcceleration();
 }
 

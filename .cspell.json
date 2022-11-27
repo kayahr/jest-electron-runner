@@ -24,7 +24,9 @@
         "IPCID",
         "kayahr",
         "Reimer",
-        "respawn"
+        "respawn",
+        "webgl",
+        "webgpu"
     ],
     "language": "en",
     "enableFiletypes": [

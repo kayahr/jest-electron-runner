@@ -8,10 +8,14 @@
 import { spawn } from "node:child_process";
 
 import type { Config } from "@jest/types";
-import { OnTestFailure, OnTestStart, OnTestSuccess, Test, TestRunnerOptions, TestWatcher } from "jest-runner";
+import {
+    CallbackTestRunner, OnTestFailure, OnTestStart, OnTestSuccess, Test, TestRunnerContext, TestRunnerOptions,
+    TestWatcher
+} from "jest-runner";
 import throat from "throat";
 
 import { TestRunnerTarget } from "../types";
+import { createElectronOptions, ElectronEnvironmentOptions } from "./Options";
 import { JestWorkerRPCProcess } from "./rpc/JestWorkerRPCProcess";
 import { getElectronBin } from "./utils/get_electron_bin";
 import { once } from "./utils/once";
@@ -28,33 +32,29 @@ export function isRenderer(target: TestRunnerTarget): target is TestRunnerTarget
     return target === TestRunnerTarget.RENDERER;
 }
 
-async function startWorker({ rootDir, target }: { rootDir: string, target: TestRunnerTarget }):
+async function startWorker(rootDir: string, target: TestRunnerTarget, config?: Config.ProjectConfig):
         Promise<JestWorkerRPCProcess> {
+    const options = config?.testEnvironmentOptions as ElectronEnvironmentOptions;
+
     if (isRenderer(target) && jestWorkerRPCProcess != null) {
         return jestWorkerRPCProcess;
     }
 
     const proc = new JestWorkerRPCProcess(
         ({ serverID }) => {
+            process.env.JEST_ELECTRON_RUNNER_ENVIRONMENT_OPTIONS_JSON = JSON.stringify(options);
             const injectedCodePath = require.resolve("./electron_process_injected_code.js");
-
             const currentNodeBinPath = process.execPath;
             const electronBin = getElectronBin(rootDir);
             const spawnArgs = [ electronBin ];
-            if (process.env.JEST_ELECTRON_RUNNER_MAIN_THREAD_DEBUG_PORT != null) {
-                spawnArgs.push(`--inspect=${process.env.JEST_ELECTRON_RUNNER_MAIN_THREAD_DEBUG_PORT}`);
-            }
-            if (process.env.JEST_ELECTRON_RUNNER_RENDERER_THREAD_DEBUG_PORT != null) {
-                spawnArgs.push(
-                    `--remote-debugging-port=${process.env.JEST_ELECTRON_RUNNER_RENDERER_THREAD_DEBUG_PORT}`);
+            for (const [ key, value ] of Object.entries(createElectronOptions(options))) {
+                if (value == null) {
+                    spawnArgs.push(`--${key}`);
+                } else {
+                    spawnArgs.push(`--${key}=${value}`);
+                }
             }
             spawnArgs.push(injectedCodePath);
-            spawnArgs.push("--no-sandbox");
-            spawnArgs.push("--headless");
-
-            if ("gc" in global) {
-                spawnArgs.push("--js-flags=--expose-gc");
-            }
             const child = spawn(currentNodeBinPath, spawnArgs, {
                 stdio: [
                     "inherit",
@@ -69,7 +69,7 @@ async function startWorker({ rootDir, target }: { rootDir: string, target: TestR
                     ...(isMain(target) ? { isMain: "true" } : {}),
                     JEST_SERVER_ID: serverID
                 },
-                detached: process.env.JEST_ELECTRON_RUNNER_DISABLE_PROCESS_DETACHMENT == null
+                detached: true
             });
             DISPOSABLES.add(() => {
                 if (child.pid != null) {
@@ -136,10 +136,11 @@ function registerProcessListeners(cleanup: Function): void {
 
 const DISPOSABLES = new Set<Function>();
 
-export default abstract class TestRunner {
+export default abstract class TestRunner extends CallbackTestRunner {
     private readonly globalConfig: Config.GlobalConfig;
 
-    public constructor(globalConfig: Config.GlobalConfig) {
+    public constructor(globalConfig: Config.GlobalConfig, context: TestRunnerContext) {
+        super(globalConfig, context);
         this.globalConfig = globalConfig;
     }
 
@@ -175,7 +176,8 @@ export default abstract class TestRunner {
         // Startup the process for renderer tests, since it'll be one
         // process that every test will share.
         if (isRenderer(target)) {
-            await startWorker({ rootDir, target });
+            const config = tests[0].context.config;
+            await startWorker(rootDir, target, config);
         }
 
         await Promise.all(
@@ -185,7 +187,7 @@ export default abstract class TestRunner {
                     try {
                         const config = test.context.config;
                         const globalConfig = this.globalConfig;
-                        const rpc = await startWorker({ rootDir, target });
+                        const rpc = await startWorker(rootDir, target, config);
                         const testResult = await rpc.remote.runTest({
                             serializableModuleMap: test.context.moduleMap.toJSON(),
                             config,
