@@ -66,7 +66,7 @@ ELECTRON_OPTIONS="--disable-webgl --enable-unsafe-webgpu"
 ## Debugging
 Normally jest-electron-runner runs a headless instance of electron when testing the renderer process. You may show the UI by adding this to your test:
 ```js
-require('electron').remote.getCurrentWindow().show();
+require('@electron/remote').getCurrentWindow().show();
 ```
 
 ## Tips

@@ -17,4 +17,8 @@ describe("Tests in renderer process", () => {
     it("Sees device pixel ratio as configured in tet environment options", () => {
         expect(window.devicePixelRatio).toBe(7);
     });
+    it("can use remote module", async () => {
+        const currentWindow = (await import("@electron/remote")).getCurrentWindow();
+        expect(currentWindow).toHaveProperty("show");
+    });
 });
