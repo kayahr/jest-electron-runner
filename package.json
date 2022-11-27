@@ -1,6 +1,6 @@
 {
     "name": "@kayahr/jest-electron-runner",
-    "version": "29.1.1",
+    "version": "29.2.0",
     "description": "Jest runner that spawns electron workers instead of node",
     "keywords": [
         "jest-electron",
