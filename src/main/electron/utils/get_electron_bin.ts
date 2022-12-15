@@ -5,7 +5,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { resolve } from "node:path";
+import { resolve } from "path";
 
 export function getElectronBin(from: string): string {
     try {

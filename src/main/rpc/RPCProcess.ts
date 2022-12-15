@@ -5,11 +5,10 @@
  * See LICENSE.md for licensing information.
  */
 
-import { ChildProcess, spawn } from "node:child_process";
-import { Socket } from "node:net";
-import { resolve } from "node:path";
-
+import { ChildProcess, spawn } from "child_process";
+import { Socket } from "net";
 import ipc from "node-ipc";
+import { resolve } from "path";
 
 import { makeUniqServerId } from "../core/utils";
 import { INITIALIZE_MESSAGE, JSONRPC_EVENT_NAME } from "./constants";

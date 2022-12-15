@@ -3,7 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { resolve } from "node:path";
+import { resolve } from "path";
 
 /**
  * Resolves a filename relative to the src/test/data directory to an absolute file URI which Electron can load from.

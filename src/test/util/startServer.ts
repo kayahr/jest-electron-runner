@@ -3,10 +3,9 @@
  * See LICENSE.md for licensing information.
  */
 
-import { Server } from "node:http";
-import { resolve } from "node:path";
-
 import express from "express";
+import { Server } from "http";
+import { resolve } from "path";
 
 export interface TestServer {
     baseUrl: string;

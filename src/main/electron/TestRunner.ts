@@ -5,9 +5,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { spawn } from "node:child_process";
-
 import type { Config } from "@jest/types";
+import { spawn } from "child_process";
 import {
     CallbackTestRunner, OnTestFailure, OnTestStart, OnTestSuccess, Test, TestRunnerContext, TestRunnerOptions,
     TestWatcher

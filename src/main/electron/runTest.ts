@@ -5,9 +5,6 @@
  * See LICENSE.md for licensing information.
  */
 
-import { readFileSync } from "node:fs";
-import { readFile } from "node:fs/promises";
-
 import {
     BufferedConsole,
     CustomConsole,
@@ -20,6 +17,8 @@ import type { JestEnvironment } from "@jest/environment";
 import type { TestFileEvent, TestResult } from "@jest/test-result";
 import { createScriptTransformer } from "@jest/transform";
 import type { Config } from "@jest/types";
+import { readFileSync } from "fs";
+import { readFile } from "fs/promises";
 import { extract, parse } from "jest-docblock";
 import LeakDetector from "jest-leak-detector";
 import { formatExecError } from "jest-message-util";
