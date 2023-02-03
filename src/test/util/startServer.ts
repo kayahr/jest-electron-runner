@@ -17,6 +17,7 @@ const webRoot =  resolve(__dirname, "../../../src/test/data");
 async function listen(port: number): Promise<Server> {
     return new Promise<Server>((resolve, reject) => {
         const app = express();
+        app.disable("x-powered-by");
         app.use(express.static(webRoot));
         const server = app.listen(port, () => {
             resolve(server);
