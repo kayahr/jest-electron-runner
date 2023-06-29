@@ -91,7 +91,7 @@
         "typescript": "5.0.4"
     },
     "dependencies": {
-        "@electron/remote": "^2.0.9",
+        "@electron/remote": "^2.0.10",
         "@jest/console": "^29.5.0",
         "@jest/transform": "^29.5.0",
         "electron": "^25.0.0",
