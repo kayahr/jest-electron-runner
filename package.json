@@ -94,7 +94,7 @@
         "@electron/remote": "^2.0.10",
         "@jest/console": "^29.6.2",
         "@jest/transform": "^29.6.2",
-        "electron": "^25.5.0",
+        "electron": "^25.8.0",
         "jest": "^29.6.2",
         "jest-docblock": "^29.4.3",
         "jest-haste-map": "^29.6.2",
