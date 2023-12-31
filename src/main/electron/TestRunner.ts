@@ -108,7 +108,8 @@ const REGISTERED_PROCESS_EVENTS_MAP = new Map<string, NodeJS.BeforeExitListener>
 function registerProcessListener(eventName: string, cb: NodeJS.BeforeExitListener): void {
     const event = REGISTERED_PROCESS_EVENTS_MAP.get(eventName);
     if (event != null) {
-        process.off(eventName, event);
+        // For some reason Electron typings destroy the NodeJS typings so we have to cast process to EventEmitter.
+        (process as NodeJS.EventEmitter).off(eventName, event);
     }
     process.on(eventName, cb);
     REGISTERED_PROCESS_EVENTS_MAP.set(eventName, cb);
