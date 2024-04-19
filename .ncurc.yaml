@@ -1,2 +1,3 @@
 reject:
-  - "node-ipc" # Rejected because of https://github.com/advisories/GHSA-3mpp-xfvh-qh37
+  - node-ipc # Rejected because of https://github.com/advisories/GHSA-3mpp-xfvh-qh37
+  - eslint   # Plugins are not compatible with v9. Example: https://github.com/typescript-eslint/typescript-eslint/issues/8211
