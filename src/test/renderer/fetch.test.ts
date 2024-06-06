@@ -34,4 +34,8 @@ describe("Tests in renderer process", () => {
         expect(image.width).toBe(640);
         expect(image.height).toBe(487);
     });
+    it("can create Request object", () => {
+        const request = new Request(resolveURI("test.png"), { headers: { Custom: "foo" } });
+        expect(request.headers.get("Custom")).toBe("foo");
+    });
 });
