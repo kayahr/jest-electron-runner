@@ -6,6 +6,7 @@
  */
 
 import { JestEnvironment, JestEnvironmentConfig } from "@jest/environment";
+import { LegacyFakeTimers, ModernFakeTimers } from "@jest/fake-timers";
 import type { Global } from "@jest/types";
 import { ModuleMocker } from "jest-mock";
 import { installCommonGlobals } from "jest-util";
@@ -43,20 +44,51 @@ function createGlobal(): Global.Global {
     return jestGlobal as Global.Global;
 }
 
+type Timer = {
+    id: number;
+    ref: () => Timer;
+    unref: () => Timer;
+};
+const timerIdToRef = (id: number): Timer => ({
+    id,
+    ref() {
+        return this;
+    },
+    unref() {
+        return this;
+    }
+});
+const timerRefToId = (timer: Timer): number | undefined => timer?.id;
+
 /**
  * Jest environment for running tests in electron.
  */
 export default class ElectronEnvironment implements JestEnvironment {
     public readonly global: Global.Global;
     public readonly moduleMocker: ModuleMocker;
-    public readonly fakeTimers = null;
-    public readonly fakeTimersModern = null;
+    public readonly fakeTimers;
+    public readonly fakeTimersModern;
     public readonly handleTestEvent = undefined;
     public readonly exportConditions = undefined;
 
     public constructor(config: JestEnvironmentConfig) {
         this.global = createGlobal();
         this.moduleMocker = new ModuleMocker(global);
+
+        // Install fake timers
+        this.fakeTimers = new LegacyFakeTimers({
+            config: config.projectConfig,
+            global,
+            moduleMocker: this.moduleMocker,
+            timerConfig: {
+                idToRef: timerIdToRef,
+                refToId: timerRefToId
+            }
+        });
+        this.fakeTimersModern = new ModernFakeTimers({
+            config: config.projectConfig,
+            global
+        });
 
         // Jest seems to set a new process property and this causes trouble in write-file-atomic module used
         // in Jest's cache transform stuff. So we remember the original property and restore it after Jest
