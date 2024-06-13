@@ -1,4 +1,2 @@
 reject:
   - node-ipc # Rejected because of https://github.com/advisories/GHSA-3mpp-xfvh-qh37
-  - eslint   # Plugins are not compatible with v9. Example: https://github.com/typescript-eslint/typescript-eslint/issues/8211
-  - electron # v30.1 makes trouble with Request constructor of fetch API for some reason. Sticking to v30.0 for now
