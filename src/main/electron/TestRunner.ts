@@ -115,7 +115,7 @@ function registerProcessListener(eventName: string, cb: NodeJS.BeforeExitListene
     REGISTERED_PROCESS_EVENTS_MAP.set(eventName, cb);
 }
 
-function registerProcessListeners(cleanup: Function): void {
+function registerProcessListeners(cleanup: () => void): void {
     registerProcessListener("SIGINT", () => {
         cleanup();
         process.exit(130);
@@ -134,7 +134,7 @@ function registerProcessListeners(cleanup: Function): void {
     });
 }
 
-const DISPOSABLES = new Set<Function>();
+const DISPOSABLES = new Set<() => void>();
 
 export default abstract class TestRunner extends CallbackTestRunner {
     private readonly globalConfig: Config.GlobalConfig;
@@ -156,12 +156,10 @@ export default abstract class TestRunner extends CallbackTestRunner {
     ): Promise<void> {
         const isWatch = this.globalConfig.watch || this.globalConfig.watchAll;
         const { maxWorkers, rootDir } = this.globalConfig;
-        const concurrency = isWatch
-            ? // because watch is usually used in the background, we'll only use
-            // half of the regular workers so we don't block other developer
-            // environment UIs
-            Math.ceil(Math.min(tests.length, maxWorkers) / 2)
-            : Math.min(tests.length, maxWorkers);
+        // because watch is usually used in the background, we'll only use
+        // half of the regular workers so we don't block other developer
+        // environment UIs
+        const concurrency = isWatch ? Math.ceil(Math.min(tests.length, maxWorkers) / 2) : Math.min(tests.length, maxWorkers);
         const target = this.getTarget();
 
         const cleanup = once(() => {

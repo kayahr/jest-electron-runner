@@ -35,7 +35,7 @@ export interface ElectronEnvironmentOptions {
          * @see https://www.electronjs.org/docs/latest/api/app#appdisablehardwareacceleration
          */
         disableHardwareAcceleration?: boolean;
-    }
+    };
 }
 
 /** The default electron switches. */

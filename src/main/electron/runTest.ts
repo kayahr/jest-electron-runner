@@ -119,7 +119,7 @@ async function runTestInternal(
     if (typeof environment.getVmContext !== "function") {
         console.error(
             `Test environment found at "${testEnvironment}" does not export a "getVmContext" method, which is `
-                + `mandatory from Jest 27. This method is a replacement for "runScript".`,
+                + `mandatory from Jest 27. This method is a replacement for "runScript".`
         );
         process.exit(1);
     }

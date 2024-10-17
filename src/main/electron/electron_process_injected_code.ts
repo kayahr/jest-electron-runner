@@ -23,7 +23,7 @@ if (options.electron?.disableHardwareAcceleration === true) {
 }
 
 // Prevent Electron from closing after last window is destroyed because new ones will be created after that.
-app.on("window-all-closed", (e: Event) => e.preventDefault());
+app.on("window-all-closed", (e?: Event) => e?.preventDefault());
 
 app.on("ready", async () => {
     // electron automatically quits if all windows are destroyed,

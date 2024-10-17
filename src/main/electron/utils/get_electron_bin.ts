@@ -11,7 +11,7 @@ export function getElectronBin(from: string): string {
     try {
         // first try to resolve from the `rootDir` of the project
         return resolve(require.resolve("electron", { paths: [ from ] }), "../cli.js");
-    } catch (error) {
+    } catch {
         // default to electron included in this package's dependencies
         return resolve(require.resolve("electron"), "../cli.js");
     }

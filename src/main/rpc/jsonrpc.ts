@@ -69,7 +69,7 @@ export interface ResponseError {
 }
 
 export interface Response {
-    jsonrpc: string,
+    jsonrpc: string;
     id: string;
     result?: unknown;
     error?: ResponseError;

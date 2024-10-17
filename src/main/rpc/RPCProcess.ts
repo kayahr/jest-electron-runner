@@ -14,7 +14,7 @@ import { makeUniqServerId } from "../core/utils";
 import { INITIALIZE_MESSAGE, JSONRPC_EVENT_NAME } from "./constants";
 import { parseResponse, serializeRequest } from "./jsonrpc";
 
-export type SpawnFn = ({ serverID }: { serverID: string}) => ChildProcess;
+export type SpawnFn = ({ serverID }: { serverID: string }) => ChildProcess;
 
 export interface SpawnNode {
     useBabel?: boolean;
@@ -22,9 +22,9 @@ export interface SpawnNode {
 }
 
 interface RequestError {
-    code: number,
-    message: string,
-    data?: string
+    code: number;
+    message: string;
+    data?: string;
 }
 
 function getBabelNodeBin(): string {
@@ -54,8 +54,7 @@ export class RPCProcess<Methods> {
     private readonly spawnFn: SpawnFn;
     public remote: Methods;
     private socket: Socket | null = null;
-    private pendingRequests: Record<string, {
-        resolve: (data: unknown) => void, reject: (error: RequestError) => void }>;
+    private pendingRequests: Record<string, { resolve: (data: unknown) => void, reject: (error: RequestError) => void }>;
     private subProcess?: ChildProcess;
 
     public constructor(spawn: SpawnFn | SpawnNode) {
@@ -102,7 +101,7 @@ export class RPCProcess<Methods> {
             try {
                 // Kill whole process group with negative PID (See `man kill`)
                 process.kill(-this.subProcess.pid, "SIGKILL");
-            } catch (e) {
+            } catch {
                 // Ignored
             }
         }

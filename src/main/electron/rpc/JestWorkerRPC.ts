@@ -68,7 +68,7 @@ async function runInBrowserWindow(testData: IPCTestData): Promise<TestResult> {
                 resolve(testResult);
             });
         });
-    } catch(error) {
+    } catch (error) {
         const testResult = buildFailureTestResult(
             testData.path,
             error instanceof Error ? error : new Error("" + error),

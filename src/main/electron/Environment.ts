@@ -24,7 +24,7 @@ const origRunInContext = Script.prototype.runInContext;
  * replaces the script run code. So we hack into the `script.runInContext` method instead to redirect it to
  * `script.runInThisContext` when environment returns the special [[RUN_IN_THIS_CONTEXT]] context.
  */
-Script.prototype.runInContext = function(context, options): unknown {
+Script.prototype.runInContext = function (context, options): unknown {
     if (context === RUN_IN_THIS_CONTEXT) {
         return this.runInThisContext(options);
     } else {
@@ -39,7 +39,7 @@ Script.prototype.runInContext = function(context, options): unknown {
  * @returns The jest global object.
  */
 function createGlobal(): Global.Global {
-    const jestGlobal: typeof globalThis & { [ "__coverage__" ] ?: unknown } = global;
+    const jestGlobal: typeof globalThis & { [ "__coverage__" ]?: unknown } = global;
     jestGlobal["__coverage__"] = {};
     return jestGlobal as Global.Global;
 }
