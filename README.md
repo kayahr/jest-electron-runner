@@ -1,5 +1,8 @@
 # Jest Electron Runner
 
+| :warning: This project is no longer maintained because the author switched from Jest to [Vitest](https://vitest.dev/) :warning: |
+| ------------------------------------------------------------------------------------------------------------------------------- |
+
 A custom test runner for Jest that runs tests inside an [electron](https://electronjs.org/) main or renderer process providing the following benefits:
 
 - Main
